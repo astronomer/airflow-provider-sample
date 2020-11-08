@@ -15,7 +15,7 @@ my_dir = dirname(__file__)
 
 
 def do_setup(version_suffix_for_pypi=''):
-    """Perform the package apache-airflow-backport-providers-datadog setup."""
+    """Perform the package airflow-astronomer-sample-provider setup."""
     setup(
         name='airflow-astronomer-sample-provider',
         description='A sample provider for Astronomer.'
