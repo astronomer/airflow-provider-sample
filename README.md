@@ -33,6 +33,6 @@ In building out a provider package repo, there are a few structural elements tha
 
 Readmes will need to be structured in a way that is logical and compliant.
 
-## Documentation
+## Module Documentation
 
-We'll want `.md` files for _each module_ living somewhere that clearly define what the operator does, its inputs, etc.
+Modules will be documented via docstrings at the top of each module.py file. These will include a high-level overview of the operator purpose and the available params.
