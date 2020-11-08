@@ -1,4 +1,4 @@
-"""Setup.py for the Astronomer sample Airflow provider package."""
+"""Setup.py for the Astronomer sample Airflow provider package. Built from datadog provider package for now."""
 
 import logging
 import os
