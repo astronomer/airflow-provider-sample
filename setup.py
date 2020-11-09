@@ -41,16 +41,10 @@ def do_setup(version_suffix_for_pypi=''):
             'Programming Language :: Python :: 3.8',
             'Topic :: System :: Monitoring',
         ],
-        author='Apache Software Foundation',
-        author_email='dev@airflow.apache.org',
-        url='http://airflow.apache.org/',
-        download_url=('https://archive.apache.org/dist/airflow/backport-providers'),
+        author='Pete DeJoy',
+        author_email='pete@astronomer.io',
+        url='http://astronomer.io/',
         python_requires='~=3.6',
-        project_urls={
-            'Documentation': 'https://airflow.apache.org/docs/',
-            'Bug Tracker': 'https://github.com/apache/airflow/issues',
-            'Source Code': 'https://github.com/apache/airflow',
-        },
     )
 
 
