@@ -1,13 +1,13 @@
 <p align="center">
   <a href="https://www.airflow.apache.org">
-    <img alt="Airflow" src="https://upload.wikimedia.org/wikipedia/commons/d/de/AirflowLogo.png" width="60" />
+    <img alt="Airflow" src="https://cwiki.apache.org/confluence/download/attachments/145723561/airflow_transparent.png?api=v2" width="60" />
   </a>
 </p>
 <h1 align="center">
   Airflow Sample Provider
 </h1>
   <h3 align="center">
-  Guildelines on building, deploying, and maintaining provider packages that will help Airflow users interface with external systems.
+  Guildelines on building, deploying, and maintaining provider packages that will help Airflow users interface with external systems. Maintained with ❤️ by Astronomer.
 </h3>
 
 <br/>
