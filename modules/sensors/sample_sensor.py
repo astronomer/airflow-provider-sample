@@ -10,12 +10,11 @@ from airflow.sensors.base_sensor_operator import BaseSensorOperator
 from airflow.utils.decorators import apply_defaults
 
 
-class DatadogSensor(BaseSensorOperator):
+class SampleSensor(BaseSensorOperator):
     """
-    A sensor to listen, with a filter, to datadog event streams and determine
-    if some event was emitted.
-    Depends on the datadog API, which has to be deployed on the same server where
-    Airflow runs.
+    This is where I will provide documentation for my sensor. As of now, this is a replication of the DataDog sensor.
+    Below is where I will document the available params for this sensor.
+
     :param datadog_conn_id: The connection to datadog, containing metadata for api keys.
     :param datadog_conn_id: str
     """
