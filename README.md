@@ -12,15 +12,20 @@
 
 <br/>
 
-This repository is intended to demonstrate a well-defined set of rules and best practices for building, structuring, and deploying Airflow provider packages as independent python modules available on pypi.
+This repository demonstrates best practices for building, structuring, and deploying Airflow provider packages as independent python modules available on pypi.
 
-## Naming Convention
+## Requirements
 
-All provider repositories must be public on github and must follow the naming convention `airflow-provider_name`. The package must be named the same way such that a user can `pip install airflow-provider_name` to make the provider package available to the user.
+Provider repositories must:
+
+1. Be public on github 
+1. Follow the naming convention `airflow-provider_name`
+
+The package must be named the same way such that a user can `pip install airflow-provider_name` to install.
 
 ## Repository Structure
 
-In building out a provider package repo, there are a few structural elements that you need. 
+In building out a provider package repo, there are a few structural elements that you need:
 
 ```bash
 ├── LICENSE # A license is required, MIT or Apache is preferred
@@ -43,33 +48,35 @@ In building out a provider package repo, there are a few structural elements tha
 
 ## Provider Readmes
 
-Readmes will need to be structured in a way that is logical and compliant. This is a bit confusing since _this_ Readme is not compliant with it's own rules, but [there is a sample readme that demonstrates correct structure here](./SAMPLE_README.md).They will adhere to the following standards:
+Readmes should be structured in a way that is logical and compliant. This is a bit confusing since _this_ Readme is not compliant with it's own rules, but [we have provided a sample readme that demonstrates correct structure here](./SAMPLE_README.md) that adheres to the following standards:
+
 - H1 at the top of the markdown file should read `<Provider Name> Airflow Provider
-- Under the H1 must be a short overview of the provider's tool and what it does.
-- There must be an H2 `Modules` section that lists and links to the available modules in the repository with a short description.
-- There must be an H2 `Compatibility` section with a table that demonstrates compatibility with Airflow versions.
+- Under the H1 should be a short overview of the provider's tool and what it does.
+- There should be an H2 `Modules` section that lists and links to the available modules in the repository with a short description.
+- There should be an H2 `Compatibility` section with a table that demonstrates compatibility with Airflow versions.
 
 ## Module Documentation
 
-Provider modules, including all hooks, operators, sensors, and transfers, will be documented via docstrings at the top of each of their respective python file. These will include a high-level overview of the operator purpose and the available params- [see here for an example of what that should look like](https://github.com/astronomer/airflow-sample_provider/blob/main/modules/operators/sample_operator.py#L11).
+Provider modules, including all hooks, operators, sensors, and transfers, should be documented via docstrings at the top of each of their respective python file. These should include a high-level overview of the operator purpose and the available params- [see here for an example of what that should look like](https://github.com/astronomer/airflow-sample_provider/blob/main/modules/operators/sample_operator.py#L11).
 
 ## Development Standards
 
 ### Building Modules
 
-All modules built should follow a specific set of best practices that optimize for how they will run in the context of Airflow.
+All modules should follow a specific set of best practices that optimize for how they will run in the context of Airflow.
 - **All classes should run without access to the internet.** This is because the Airflow scheduler parses DAGs on a regular schedule; every time that parse happens, Airflow will execute whatever is contained in the `init` method of your class. If that `init` method contains network requests, such as calls to a third party API, there will be problems due to how frequently Airflow parses the DAG file.
 - **All operator modules will need an `execute` method.** This method will define the logic that will be implemented by the operator.
 
 ### Writing Tests
 
-Information on writing tests for modules here.
+> TODO: Information on writing tests for modules here.
 
 ### Managing Dependencies
 
 [All of the default dependencies included in the core Airflow project can be found here.](https://github.com/apache/airflow/blob/master/setup.py#L705) When building providers, defined compatibility with specific Airflow versions is required. It's important that the providers do not include dependencies that conflict with the underlying dependencies for a particular Airflow version.
 
 Additionally, there are a few rules to adhere to when considering adding dependencies to your provider package in your `setup.py` file. These rules are intended to avoid conflicts between various provider packages that may be imported and used in the same Airflow instance:
+
 1. Rule 1
 2. Rule 2
 3. Rule 3
@@ -92,4 +99,4 @@ Once you have the local wheel built, you can deploy it to PyPi for broader distr
 
 ### Automated Builds
 
-Add section on automatically building and deploying package with CI here.
+> TODO: Add section on automatically building and deploying package with CI here.
