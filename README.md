@@ -35,8 +35,7 @@ Readmes will need to be structured in a way that is logical and compliant. This 
 - H1 at the top of the markdown file should read `<Provider Name> Airflow Provider
 - Under the H1 must be a short overview of the provider's tool and what it does.
 - There must be an H2 `Modules` section that lists and links to the available modules in the repository with a short description.
-- There must be an H2 `Compatibility` section that documents which version of Airflow each release of the package is known ot be compatible with.
-- 
+- There must be an H2 `Compatibility` section with a table that demonstrates compatibility with Airflow versions.
 
 ## Module Documentation
 
