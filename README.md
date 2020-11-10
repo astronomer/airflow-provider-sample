@@ -39,7 +39,7 @@ Readmes will need to be structured in a way that is logical and compliant. This 
 
 ## Module Documentation
 
-Provider modules, including all hooks, operators, sensors, and transfers, will be documented via docstrings at the top of each of their respective python. These will include a high-level overview of the operator purpose and the available params.
+Provider modules, including all hooks, operators, sensors, and transfers, will be documented via docstrings at the top of each of their respective python file. These will include a high-level overview of the operator purpose and the available params- [see here for an example of what that should look like](https://github.com/astronomer/airflow-sample_provider/blob/main/modules/operators/sample_operator.py#L11).
 
 ## Development Standards
 
