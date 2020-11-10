@@ -35,4 +35,16 @@ Readmes will need to be structured in a way that is logical and compliant.
 
 ## Module Documentation
 
-Modules will be documented via docstrings at the top of each module.py file. These will include a high-level overview of the operator purpose and the available params.
+Provider modules, including all hooks, operators, sensors, and transfers, will be documented via docstrings at the top of each of their respective pythong. These will include a high-level overview of the operator purpose and the available params.
+
+## Development Standards
+
+### Avoiding Dependency Conflicts
+
+[All of the default dependencies included in the core Airflow project can be found here.](https://github.com/apache/airflow/blob/master/setup.py#L705) When building providers that shoot for compatibility with specific Airflow versions, it's important that the providers do not include dependencies that conflict with the underlying Airflow dependencies.
+
+Additionally, there are a few rules to adhere to when building out the dependencies for your provider package. These rules are intended to avoid conflicts between various provider packages that may be imported and used in the same Airflow instance:
+1. Rule 1
+2. Rule 2
+3. Rule 3
+

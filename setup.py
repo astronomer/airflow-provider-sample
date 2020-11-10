@@ -17,9 +17,9 @@ my_dir = dirname(__file__)
 def do_setup(version_suffix_for_pypi=''):
     """Perform the package airflow-astronomer-sample-provider setup."""
     setup(
-        name='airflow-astronomer-sample-provider',
+        name='airflow-sample_provider',
         description='A sample provider for Astronomer.'
-        'airflow-astronomer-sample-provider for Apache Airflow',
+        'airflow-sample_provider for Apache Airflow',
         long_description="Here is a long description for my sample provider",
         long_description_content_type='text/markdown',
         license='Apache License 2.0',
