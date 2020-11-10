@@ -1,4 +1,16 @@
-# Airflow Sample Provider
+<p align="center">
+  <a href="https://www.airflow.apache.org">
+    <img alt="Airflow" src="https://upload.wikimedia.org/wikipedia/commons/d/de/AirflowLogo.png" width="60" />
+  </a>
+</p>
+<h1 align="center">
+  Airflow Sample Provider
+</h1>
+  <h3 align="center">
+  Guildelines on building, deploying, and maintaining provider packages that will help Airflow users interface with external systems.
+</h3>
+
+<br/>
 
 This repository is intended to demonstrate a well-defined set of rules and best practices for building, structuring, and deploying Airflow provider packages as independent python modules available on pypi.
 
