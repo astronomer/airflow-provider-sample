@@ -43,6 +43,16 @@ Provider modules, including all hooks, operators, sensors, and transfers, will b
 
 ## Development Standards
 
+### Building Modules
+
+All modules built should follow a specific set of best practices that optimize for how they will run in the context of Airflow.
+- **All classes should run without access to the internet.** This is because the Airflow scheduler parses DAGs on a regular schedule; every time that parse happens, Airflow will execute whatever is contained in the `init` method of your class. If that `init` method contains network requests, such as calls to a third party API, there will be problems due to how frequently Airflow parses the DAG file.
+- **All operator modules will need an `execute` method.** This method will define the logic that will be implemented by the operator.
+
+### Writing Tests
+
+Information on writing tests for modules here.
+
 ### Managing Dependencies
 
 [All of the default dependencies included in the core Airflow project can be found here.](https://github.com/apache/airflow/blob/master/setup.py#L705) When building providers, defined compatibility with specific Airflow versions is required. It's important that the providers do not include dependencies that conflict with the underlying dependencies for a particular Airflow version.
@@ -52,10 +62,9 @@ Additionally, there are a few rules to adhere to when considering adding depende
 2. Rule 2
 3. Rule 3
 
-### Writing Tests
+### Versioning
 
-Information on writing tests for modules here.
-
+Maintainers should use standard semantic versioning for releasing their packages.
 
 ## Building Your Package
 
@@ -68,3 +77,7 @@ python setup.py bdist_wheel
 ```
 
 Once you have the local wheel built, you can deploy it to PyPi for broader distribution.
+
+### Automated Builds
+
+Add section on automatically building and deploying package with CI here.
