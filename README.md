@@ -35,16 +35,32 @@ Readmes will need to be structured in a way that is logical and compliant.
 
 ## Module Documentation
 
-Provider modules, including all hooks, operators, sensors, and transfers, will be documented via docstrings at the top of each of their respective pythong. These will include a high-level overview of the operator purpose and the available params.
+Provider modules, including all hooks, operators, sensors, and transfers, will be documented via docstrings at the top of each of their respective python. These will include a high-level overview of the operator purpose and the available params.
 
 ## Development Standards
 
-### Avoiding Dependency Conflicts
+### Managing Dependencies
 
 [All of the default dependencies included in the core Airflow project can be found here.](https://github.com/apache/airflow/blob/master/setup.py#L705) When building providers that shoot for compatibility with specific Airflow versions, it's important that the providers do not include dependencies that conflict with the underlying Airflow dependencies.
 
-Additionally, there are a few rules to adhere to when building out the dependencies for your provider package. These rules are intended to avoid conflicts between various provider packages that may be imported and used in the same Airflow instance:
+Additionally, there are a few rules to adhere to when considering adding dependencies to your provider package in your `setup.py` file. These rules are intended to avoid conflicts between various provider packages that may be imported and used in the same Airflow instance:
 1. Rule 1
 2. Rule 2
 3. Rule 3
 
+### Writing Tests
+
+Information on writing tests for modules here.
+
+
+## Building Your Package
+
+To build your repo into a python wheel that can then be deployed to [PyPi](https://pypi.org), we use [setuptools](https://pypi.org/project/setuptools/).
+
+Once your `setup.py` file is set up, you can run the following command to build a local version of your wheel off of your project directory:
+
+```bash
+python setup.py bdist_wheel
+```
+
+Once you have the local wheel built, you can deploy it to PyPi for broader distribution.
