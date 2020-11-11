@@ -67,12 +67,10 @@ Information on writing tests for modules here.
 
 ### Managing Dependencies
 
-[All of the default dependencies included in the core Airflow project can be found here.](https://github.com/apache/airflow/blob/master/setup.py#L705) When building providers, defined compatibility with specific Airflow versions is required. It's important that the providers do not include dependencies that conflict with the underlying dependencies for a particular Airflow version.
+When building providers, a few rules should be followed to remove potential for dependency conflicts.
 
-Additionally, there are a few rules to adhere to when considering adding dependencies to your provider package in your `setup.py` file. These rules are intended to avoid conflicts between various provider packages that may be imported and used in the same Airflow instance:
-1. Rule 1
-2. Rule 2
-3. Rule 3
+1. It is important that the providers do not include dependencies that conflict with the underlying dependencies for a particular Airflow version. [All of the default dependencies included in the core Airflow project can be found here.](https://github.com/apache/airflow/blob/master/setup.py#L705)
+2. Keep all dependencies upper-bound relaxed; at least allow minor versions, ie. `depx >=2.0.0, <3`. Publish a contraint file with the exact set of dependencies that your provider package has been tested with.
 
 ### Versioning
 
