@@ -28,22 +28,23 @@ The package must be named the same way such that a user can `pip install airflow
 In building out a provider package repo, there are a few structural elements that you need:
 
 ```bash
-├── LICENSE # A license is required, MIT or Apache is preferred
-├── README.md # A clear and descriptive readme that follows the standards defined below
-├── examples # A directory for example DAGs using this provider in context
-│   └── sample-dag.py
-├── modules # A modules directory that contains all Airflow hooks, operators, sensors, transfers, etc.
-│   ├── hooks
-│   │   ├── __init__.py
-│   │   └── sample_hook.py
-│   ├── operators
-│   │   ├── __init__.py
-│   │   └── sample_operator.py
-│   └── sensors
-│       ├── __init__.py
-│       └── sample_sensor.py
-├── setup.cfg # A setup.cfg file
-└── setup.py # A setup.py file to define dependencies and how the package is built and shipped
+├── LICENSE                           # A license is required, MIT or Apache is preferred
+├── README.md                         # A clear and descriptive readme that follows the standards defined below
+├── setup.py                          # A setup.py file to define dependencies and how the package is built and shipped
+└── sample_provider                   # A modules directory that contains all Airflow hooks, operators, sensors, transfers, etc.
+    ├── __init__.py
+    │       ├── example_dags    # A directory for example DAGs using this provider in context
+    │       │   ├── __init__.py
+    │       │   └── sample-dag.py
+    ├── hooks
+    │   ├── __init__.py
+    │   └── sample_hook.py
+    ├── operators
+    │   ├── __init__.py
+    │   └── sample_operator.py
+    └── sensors
+        ├── __init__.py
+        └── sample_sensor.py
 ```
 
 ## Provider Readmes
@@ -75,16 +76,8 @@ All modules should follow a specific set of best practices that optimize for how
 
 When building providers, a few rules should be followed to remove potential for dependency conflicts.
 
-<<<<<<< HEAD
 1. It is important that the providers do not include dependencies that conflict with the underlying dependencies for a particular Airflow version. [All of the default dependencies included in the core Airflow project can be found here.](https://github.com/apache/airflow/blob/master/setup.py#L705)
 2. Keep all dependencies upper-bound relaxed; at least allow minor versions, ie. `depx >=2.0.0, <3`. Publish a contraint file with the exact set of dependencies that your provider package has been tested with.
-=======
-Additionally, there are a few rules to adhere to when considering adding dependencies to your provider package in your `setup.py` file. These rules are intended to avoid conflicts between various provider packages that may be imported and used in the same Airflow instance:
-
-1. Rule 1
-2. Rule 2
-3. Rule 3
->>>>>>> 77568ba8867a090b2237b685a670d657b327ff94
 
 ### Versioning
 
@@ -92,7 +85,7 @@ Maintainers should use standard semantic versioning for releasing their packages
 
 ## Building Your Package
 
-To build your repo into a python wheel that can then be deployed to [PyPi](https://pypi.org), we use [setuptools](https://pypi.org/project/setuptools/).
+To build your repo into a python wheel that can then be deployed to [PyPI](https://pypi.org), we use [setuptools](https://pypi.org/project/setuptools/).
 
 Once your `setup.py` file is set up, you can run the following command to build a local version of your wheel off of your project directory:
 
@@ -100,7 +93,7 @@ Once your `setup.py` file is set up, you can run the following command to build 
 python setup.py bdist_wheel
 ```
 
-Once you have the local wheel built, you can deploy it to PyPi for broader distribution.
+Once you have the local wheel built, you can deploy it to PyPI for broader distribution.
 
 ### Automated Builds
 
