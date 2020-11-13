@@ -13,6 +13,8 @@ version = '2020.10.29'
 
 my_dir = dirname(__file__)
 
+with open("README.md", "r") as fh:
+    long_description = fh.read()
 
 def do_setup(version_suffix_for_pypi=''):
     """Perform the package airflow-sample_provider setup."""
@@ -20,7 +22,7 @@ def do_setup(version_suffix_for_pypi=''):
         name='airflow-sample_provider',
         description='A sample provider for Astronomer.'
         'airflow-sample_provider for Apache Airflow',
-        long_description="Here is a long description for my sample provider",
+        long_description=long_description,
         long_description_content_type='text/markdown',
         license='Apache License 2.0',
         version=version + version_suffix_for_pypi,
