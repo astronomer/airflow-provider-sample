@@ -3,9 +3,9 @@
 from setuptools import find_packages, setup
 
 setup(
-    name='kairflow-sample_provider',
-    description='A sample provider for Astronomer. airflow-sample_provider for Apache Airflow',
-    long_description="Here is a long description for my sample provider",
+    name='airflow-provider-sample',
+    description='A sample provider for Apache Airflow',
+    long_description="A longer description of my sample provider.",
     long_description_content_type='text/markdown',
     license='Apache License 2.0',
     version='0.0.1',

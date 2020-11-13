@@ -19,32 +19,33 @@ This repository demonstrates best practices for building, structuring, and deplo
 Provider repositories must:
 
 1. Be public on github 
-1. Follow the naming convention `airflow-provider_name`
+2. Follow the naming convention `airflow-provider-<provider-name>`
 
-The package must be named the same way such that a user can `pip install airflow-provider_name` to install.
+The package must be named the same way such that a user can `pip install airflow-provider-<provider-name>` to install.
 
 ## Repository Structure
 
 In building out a provider package repo, there are a few structural elements that you need:
 
 ```bash
-├── LICENSE                           # A license is required, MIT or Apache is preferred
-├── README.md                         # A clear and descriptive readme that follows the standards defined below
-├── setup.py                          # A setup.py file to define dependencies and how the package is built and shipped
-└── sample_provider                   # A modules directory that contains all Airflow hooks, operators, sensors, transfers, etc.
-    ├── __init__.py
-    │       ├── example_dags    # A directory for example DAGs using this provider in context
-    │       │   ├── __init__.py
-    │       │   └── sample-dag.py
-    ├── hooks
-    │   ├── __init__.py
-    │   └── sample_hook.py
-    ├── operators
-    │   ├── __init__.py
-    │   └── sample_operator.py
-    └── sensors
-        ├── __init__.py
-        └── sample_sensor.py
+├── LICENSE # A license is required, MIT or Apache is preferred
+├── README.md
+├── SAMPLE_README.md # A clear and descriptive readme that follows the standards defined below
+├── sample_provider # A directory that contains all Airflow hooks, operators, sensors, transfers, and example DAGs.
+│   ├── __init__.py
+│   ├── example_dags
+│   │   ├── __init__.py
+│   │   └── sample-dag.py
+│   ├── hooks
+│   │   ├── __init__.py
+│   │   └── sample_hook.py
+│   ├── operators
+│   │   ├── __init__.py
+│   │   └── sample_operator.py
+│   └── sensors
+│       ├── __init__.py
+│       └── sample_sensor.py
+└── setup.py # A setup.py file to define dependencies and how the package is built and shipped
 ```
 
 ## Provider Readmes
