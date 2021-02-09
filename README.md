@@ -23,6 +23,8 @@ Provider repositories must:
 
 The package must be named the same way such that a user can `pip install airflow-provider-<provider-name>` to install.
 
+> note: If the provider repo sits inside an organization the `provider-name` should be the same as the organization name.
+
 ## Repository Structure
 
 In building out a provider package repo, there are a few structural elements that you need:
