@@ -9,11 +9,11 @@ setup(
     long_description_content_type='text/markdown',
     license='Apache License 2.0',
     version='0.0.1',
-    ## This is needed to allow Airflow to pick up specific metadata fields it needs for certain features
-    entry_points='''
-        [apache_airflow_provider]
-        provider_info=sample_provider.__init__:get_provider_info
-    ''',
+    entry_points={
+        "apache_airflow_provider": [
+            "provider_info=sample_provider.__init__:get_provider_info"
+        ]
+    },
     packages=find_packages(),
     zip_safe=False,
     install_requires=['apache-airflow~=1.10'],
