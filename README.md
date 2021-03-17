@@ -47,23 +47,37 @@ In building out a provider package repo, there are a few structural elements tha
 │   └── sensors
 │       ├── __init__.py
 │       └── sample_sensor.py
-└── setup.py # A setup.py file to define dependencies and how the package is built and shipped
+└── setup.py # A setup.py file to define dependencies and how the package is built and shipped. If you'd like to use setup.cfg, that is fine as well.
 ```
 
-## Provider Readmes
 
-Readmes should be structured in a way that is logical and compliant. This is a bit confusing since _this_ Readme is not compliant with it's own rules, but [we have provided a sample readme that demonstrates correct structure here](./SAMPLE_README.md) that adheres to the following standards:
+## Development Standards
+
+### Building Provider Package
+
+Most of what you need is included in `setup.py` and ready to customize, but you are also able to use a `setup.cfg` if you prefer going that route.
+
+One thing to note- you do need to declare variables for package metadata in two separate places at the moment if you want to build the best experience for your users. This is largely due to the way Airflow handles looking for metadata under the hood; pypi needs the top-level `setup.py` metadata, but Airflow requires the metadata defined in the `apache_airflow_provider` entrypoint, which is built from a `get_provider_info` function [included here](./sample_provider/__init__.py). This `get_provider_info` function *must* return name, description, and versions and can also return `hook-class-names` for any hooks that contain custom connections and `extra-links` for any [extra links]https://airflow.apache.org/docs/apache-airflow/stable/howto/define_extra_link.html) that you define in your modules (there should be one of these per module that links back to its corresponding page on the Astronomer Registry).
+
+### Provider Readmes
+
+Readmes should be structured in a way that is logical and compliant. This is a bit confusing since _this_ Readme is not compliant with its own rules, but [we have provided a sample readme that demonstrates correct structure here](./SAMPLE_README.md) that adheres to the following standards:
 
 - H1 at the top of the markdown file should read `<Provider Name> Airflow Provider
 - Under the H1 should be a short overview of the provider's tool and what it does.
 - There should be an H2 `Modules` section that lists and links to the available modules in the repository with a short description.
 - There should be an H2 `Compatibility` section with a table that demonstrates compatibility with Airflow versions.
 
-## Module Documentation
+#### Managing Dependencies
 
-Provider modules, including all hooks, operators, sensors, and transfers, should be documented via docstrings at the top of each of their respective python file. These should include a high-level overview of the operator purpose and the available params- [see here for an example of what that should look like](https://github.com/astronomer/airflow-sample_provider/blob/main/modules/operators/sample_operator.py#L11).
+When building providers, a few rules should be followed to remove potential for dependency conflicts.
 
-## Development Standards
+1. It is important that the providers do not include dependencies that conflict with the underlying dependencies for a particular Airflow version. [All of the default dependencies included in the core Airflow project can be found here.](https://github.com/apache/airflow/blob/master/setup.py#L705)
+2. Keep all dependencies upper-bound relaxed; at least allow minor versions, ie. `depx >=2.0.0, <3`. Publish a contraint file with the exact set of dependencies that your provider package has been tested with.
+
+#### Versioning
+
+Maintainers should use standard semantic versioning for releasing their packages. They should be sure to update all of the relevant metadata fields before cutting a new release.
 
 ### Building Modules
 
@@ -71,20 +85,19 @@ All modules should follow a specific set of best practices that optimize for how
 - **All classes should run without access to the internet.** This is because the Airflow scheduler parses DAGs on a regular schedule; every time that parse happens, Airflow will execute whatever is contained in the `init` method of your class. If that `init` method contains network requests, such as calls to a third party API, there will be problems due to how frequently Airflow parses the DAG file.
 - **All operator modules will need an `execute` method.** This method will define the logic that will be implemented by the operator.
 
-### Writing Tests
+Modules should also take advantage of native Airflow features that allow your provider to:
+- Register custom conn types for a great UX around connecting to your tool.
+- Include `extra-links` that link your provider back to its page on the Astronomer Registry for easy user access to documentation and example DAGs.
 
-> TODO: Information on writing tests for modules here.
+### Module Documentation
 
-### Managing Dependencies
+Provider modules, including all hooks, operators, sensors, and transfers, should be documented via [sphinx-templated docstrings](https://pythonhosted.org/an_example_pypi_project/sphinx.html) at the top of each of their respective python file. These docstrings should include three things:
+1. A one-sentence description explaining *what* the module does.
+2. A long description explaining *hot* the module works. This can include more verbose language or documentation, including code blocks or blockquotes. See 
+3. A declarative definiton of parameters that you can pass to the module, templated per the example below.
 
-When building providers, a few rules should be followed to remove potential for dependency conflicts.
+[See here for an active example](https://github.com/astronomer/airflow-sample_provider/blob/main/modules/operators/sample_operator.py#L11).
 
-1. It is important that the providers do not include dependencies that conflict with the underlying dependencies for a particular Airflow version. [All of the default dependencies included in the core Airflow project can be found here.](https://github.com/apache/airflow/blob/master/setup.py#L705)
-2. Keep all dependencies upper-bound relaxed; at least allow minor versions, ie. `depx >=2.0.0, <3`. Publish a contraint file with the exact set of dependencies that your provider package has been tested with.
-
-### Versioning
-
-Maintainers should use standard semantic versioning for releasing their packages.
 
 ## Building Your Package
 
@@ -98,6 +111,3 @@ python setup.py bdist_wheel
 
 Once you have the local wheel built, you can deploy it to PyPI for broader distribution.
 
-### Automated Builds
-
-> TODO: Add section on automatically building and deploying package with CI here.

@@ -5,10 +5,11 @@ from setuptools import find_packages, setup
 setup(
     name='airflow-provider-sample',
     description='A sample provider for Apache Airflow',
-    long_description="A longer description of my sample provider.",
+    long_description=
     long_description_content_type='text/markdown',
     license='Apache License 2.0',
     version='0.0.1',
+    ## This is needed to allow Airflow to pick up specific metadata fields it needs for certain features
     entry_points='''
         [apache_airflow_provider]
         provider_info=sample_provider.__init__:get_provider_info
