@@ -2,7 +2,9 @@
 def get_provider_info():
     return {
         "package-name": "airflow-provider-sample",
-        "name": "Sample Airflow Provider",
-        "description": "A sample templat for airflow providers.",
-        "hook-class-names": ["sample_provider.hooks.sample_hook.SampleHook"]
+        "name": "Sample Airflow Provider", # Required
+        "description": "A sample template for airflow providers.", # Required
+        "hook-class-names": ["sample_provider.hooks.sample_hook.SampleHook"],
+        "extra-links": ["sample_provider.operators.sample_operator.ExtraLink"], #TODO: Add extra link class to sample operator
+        "versions": ["0.0.1"] # Required
     }

@@ -11,10 +11,11 @@ log = logging.getLogger(__name__)
 
 class SampleHook(LoggingMixin):
     """
-    Here is where I will document my hook.
+    [Short description here explaining what the operator does] A SampleHook built from the BaseHook in Airflow.
 
-    This file is an abstract base class for hooks, which are meant as an interface to
-    interact with external systems.
+    [Long description explaining how it works and including any necessary code blocks or notes] This hook is a copy of the BaseHook in Airflow and is built for demo purposes only. It is not functional.
+
+    [Params with descriptions]
     """
 
     @classmethod

@@ -32,8 +32,7 @@ In building out a provider package repo, there are a few structural elements tha
 ```bash
 ├── LICENSE # A license is required, MIT or Apache is preferred
 ├── README.md
-├── SAMPLE_README.md # A clear and descriptive readme that follows the standards defined below
-├── sample_provider # A directory that contains all Airflow hooks, operators, sensors, transfers, and example DAGs.
+├── sample_provider # Your package import directory. This will contain all Airflow modules and example DAGs.
 │   ├── __init__.py
 │   ├── example_dags
 │   │   ├── __init__.py
@@ -47,7 +46,14 @@ In building out a provider package repo, there are a few structural elements tha
 │   └── sensors
 │       ├── __init__.py
 │       └── sample_sensor.py
-└── setup.py # A setup.py file to define dependencies and how the package is built and shipped. If you'd like to use setup.cfg, that is fine as well.
+├── setup.py # A setup.py file to define dependencies and how the package is built and shipped. If you'd like to use setup.cfg, that is fine as well.
+└── tests # Unit tests for all of your modules
+    ├── hooks
+    │   └── sample_hook_test.py
+    ├── operators
+    │   └── sample_operator_test.py
+    └── sensors
+        └── sample_sensor_test.py
 ```
 
 
@@ -61,12 +67,7 @@ One thing to note- you do need to declare variables for package metadata in two 
 
 ### Provider Readmes
 
-Readmes should be structured in a way that is logical and compliant. This is a bit confusing since _this_ Readme is not compliant with its own rules, but [we have provided a sample readme that demonstrates correct structure here](./SAMPLE_README.md) that adheres to the following standards:
-
-- H1 at the top of the markdown file should read `<Provider Name> Airflow Provider
-- Under the H1 should be a short overview of the provider's tool and what it does.
-- There should be an H2 `Modules` section that lists and links to the available modules in the repository with a short description.
-- There should be an H2 `Compatibility` section with a table that demonstrates compatibility with Airflow versions.
+Readmes should contain top-level documentation about the provider's service, how to build a connection to the service from Airflow, what modules exist within the package, and how the repository maintainers would like folks to contribute.
 
 #### Managing Dependencies
 
@@ -89,25 +90,68 @@ Modules should also take advantage of native Airflow features that allow your pr
 - Register custom conn types for a great UX around connecting to your tool.
 - Include `extra-links` that link your provider back to its page on the Astronomer Registry for easy user access to documentation and example DAGs.
 
+### Testing Modules
+
+The provider should contain a top-level `tests/` folder that contains unit tests for all modules that exist in the repository. Maintainers may write tests in the framework of their choice- the Astronomer team and Airflow community typically uses [pytest](https://docs.pytest.org/en/stable/).
+
 ### Module Documentation
 
-Provider modules, including all hooks, operators, sensors, and transfers, should be documented via [sphinx-templated docstrings](https://pythonhosted.org/an_example_pypi_project/sphinx.html) at the top of each of their respective python file. These docstrings should include three things:
+Provider modules, including all hooks, operators, sensors, and transfers, should be documented via [sphinx-templated docstrings](https://pythonhosted.org/an_example_pypi_project/sphinx.html) at the top of each of their respective python file. These docstrings should include three things, all separated by blank lines in the docstring:
 1. A one-sentence description explaining *what* the module does.
 2. A long description explaining *hot* the module works. This can include more verbose language or documentation, including code blocks or blockquotes. See 
-3. A declarative definiton of parameters that you can pass to the module, templated per the example below.
+3. A declarative definition of parameters that you can pass to the module, templated per the example below.
 
 [See here for an active example](https://github.com/astronomer/airflow-sample_provider/blob/main/modules/operators/sample_operator.py#L11).
 
+## Integrating with Airflow
 
-## Building Your Package
+Airflow exposes a number of plugins that you're able to interface with from your provider package if you care to do so. We *highly* encourage provider maintainers to add these bits, as they improve the UX of a provider significantly.
 
-To build your repo into a python wheel that can then be deployed to [PyPI](https://pypi.org), we use [setuptools](https://pypi.org/project/setuptools/).
+To start, you'll need to define an `apache_airflow_provider ` entrypoint in your `setup.py` or `setup.cfg` file:
 
-Once your `setup.py` file is set up, you can run the following command to build a local version of your wheel off of your project directory:
-
-```bash
-python setup.py bdist_wheel
+```    
+entry_points={
+  "apache_airflow_provider": [
+      "provider_info=sample_provider.__init__:get_provider_info"
+        ]
+    }
 ```
 
-Once you have the local wheel built, you can deploy it to PyPI for broader distribution.
+Next, you'll need to add a `get_provider_info` method to [the `__init__` file in your top-level provider folder](./sample_provider/__init__.py). This function needs to return certain metadata associated with your package in order for Airflow to be able to pick it up. We are aware it's not completely ideal to define some of this metadata in a location separate from your `setup.py` file, but Airflow needs this function at runtime for its plugins to pick up the necessary information:
+
+```python
+def get_provider_info():
+    return {
+        "package-name": "airflow-provider-sample",
+        "name": "Sample Airflow Provider", # Required
+        "description": "A sample template for airflow providers.", # Required
+        "hook-class-names": ["sample_provider.hooks.sample_hook.SampleHook"],
+        "extra-links": ["sample_provider.operators.sample_operator.ExtraLink"]
+        "versions": ["0.0.1"] # Required
+    }
+```
+
+Once you have this entrypoint defined, you can use some of Airflow's native features to expose custom connection types to the Airflow UI and extra links to relevant pages of documentation and information.
+
+## Testing Your Package
+
+To build your repo into a python wheel that can be tested, follow the steps below:
+
+1. Clone the provider repo
+2. cd into provider directory
+3. Run `python3 -m pip install build`
+4. Run `python3 -m build` to build the wheel
+5. Find the .whl file in /dist/*.whl
+6. Download the [Astro CLI](https://github.com/astronomer/astro-cli)
+7. Create a new project directory, cd into it, and run `astro dev init` to initialize a new astro project
+8. Ensure the Dockerfile contains Airflow 2.0: `FROM quay.io/astronomer/ap-airflow:2.0.0-buster-onbuild`
+9. Copy `.whl` file to the top-level of your Astro project
+10. Add to Dockerfile `RUN pip install --user airflow_provider_fivetran-0.0.1-py3-none-any.whl` to install the wheel into the containerized operating environment.
+11. Copy your sample DAG to the `dags/` folder of your astro project directory.
+12. Run `astro dev start` to build the containers and run Airflow locally (you'll need Docker on your machine).
+13. When you're done, run `astro dev stop` to wind down the deployment (or `astro dev kill` to kill the containers and remove the local Docker volumes. You can also use this command if you need to rebuild the environment with a new .whl file.
+
+> Note: If you are having trouble accessing the Airflow webserver locally, it is likely due to a bug in your wheel setup. To debug, run `docker ps`, grab the container ID of the scheduler, and run `docker logs <scheduler-container-id>` to see the issue.
+
+Once you have the local wheel built and tested, you're ready to [send us your repo](https://registry.astronomer.io/publish-rovider) to be published on [The Astronomer Registry](https://registry.astronomer.io).
 

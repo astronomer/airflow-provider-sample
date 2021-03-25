@@ -1,4 +1,4 @@
-"""Sample sensor built from Datadog sensor (For now, to be changed)"""
+"""Sample sensor built from Datadog sensor"""
 
 from typing import Any, Callable, Dict, List, Optional
 
@@ -12,15 +12,16 @@ from airflow.utils.decorators import apply_defaults
 
 class SampleSensor(BaseSensorOperator):
     """
-    This is where I will provide documentation for my sensor. As of now, this is a replication of the DataDog sensor.
-    Below is where I will document the available params for this sensor.
+    [Short description here explaining what the operator does] This is a sample sensor built from the DataDog Sensor.
+
+    [Long description explaining how it works and including any necessary code blocks or notes] This sensor is built from the DataDog sensor and is not intended to be used in any production context.
+
+    [Params with descriptions]
+    :param str my_operator_param: A random string to pass to the operator that will be printed after "Hello World!"
 
     :param datadog_conn_id: The connection to datadog, containing metadata for api keys.
     :param datadog_conn_id: str
     """
-
-    ui_color = '#66c3dd'
-
     @apply_defaults
     def __init__(
         self,

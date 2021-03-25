@@ -11,7 +11,7 @@ class SampleOperator(BaseOperator):
     """
     [Short description here explaining what the operator does] This operator prints both "Hello World!" and whatever string that I choose to pass as a parameter.
 
-    [Long description explaining how it works and including any necessary code blocks of notes] This operator extends the BaseOperator.
+    [Long description explaining how it works and including any necessary code blocks or notes] This operator extends the BaseOperator.
 
     [Params with descriptions]
     :param str my_operator_param: A random string to pass to the operator that will be printed after "Hello World!"
