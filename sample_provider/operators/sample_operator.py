@@ -9,9 +9,11 @@ log = logging.getLogger(__name__)
 
 class SampleOperator(BaseOperator):
     """
-    Insert your operator documentation here. This operator inherits from the BaseOperator and prints "Hello World!" and whatever string that I choose to pass as an argument.
+    [Short description here explaining what the operator does] This operator prints both "Hello World!" and whatever string that I choose to pass as a parameter.
 
-    Here is where we'll include our params
+    [Long description explaining how it works and including any necessary code blocks of notes] This operator extends the BaseOperator.
+
+    [Params with descriptions]
     :param str my_operator_param: A random string to pass to the operator that will be printed after "Hello World!"
     """
 
