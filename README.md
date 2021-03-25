@@ -16,14 +16,11 @@ This repository demonstrates best practices for building, structuring, and deplo
 
 ## Requirements
 
-Provider repositories must:
+Provider repositories must be public on Github and follow the structural and technical guidelines laid out in this Readme.
 
-1. Be public on github 
-2. Follow the naming convention `airflow-provider-<provider-name>`
+The package must be named in `airflow-provider-<provider-name>`.
 
-The package must be named the same way such that a user can `pip install airflow-provider-<provider-name>` to install.
-
-> note: If the provider repo sits inside an organization the `provider-name` should be the same as the organization name.
+> Note: If the provider repo sits inside an organization the `provider-name` should be the same as the organization name.
 
 ## Repository Structure
 
@@ -63,18 +60,16 @@ In building out a provider package repo, there are a few structural elements tha
 
 Most of what you need is included in `setup.py` and ready to customize, but you are also able to use a `setup.cfg` if you prefer going that route.
 
-One thing to note- you do need to declare variables for package metadata in two separate places at the moment if you want to build the best experience for your users. This is largely due to the way Airflow handles looking for metadata under the hood; pypi needs the top-level `setup.py` metadata, but Airflow requires the metadata defined in the `apache_airflow_provider` entrypoint, which is built from a `get_provider_info` function [included here](./sample_provider/__init__.py). This `get_provider_info` function *must* return name, description, and versions and can also return `hook-class-names` for any hooks that contain custom connections and `extra-links` for any [extra links]https://airflow.apache.org/docs/apache-airflow/stable/howto/define_extra_link.html) that you define in your modules (there should be one of these per module that links back to its corresponding page on the Astronomer Registry).
-
 ### Provider Readmes
 
-Readmes should contain top-level documentation about the provider's service, how to build a connection to the service from Airflow, what modules exist within the package, and how the repository maintainers would like folks to contribute.
+Readmes should contain top-level documentation about the provider's service, how to build a connection to the service from Airflow, what modules exist within the package, what dependency versions the provider has been tested with, and how the repository maintainers would like folks to contribute.
 
 #### Managing Dependencies
 
 When building providers, a few rules should be followed to remove potential for dependency conflicts.
 
 1. It is important that the providers do not include dependencies that conflict with the underlying dependencies for a particular Airflow version. [All of the default dependencies included in the core Airflow project can be found here.](https://github.com/apache/airflow/blob/master/setup.py#L705)
-2. Keep all dependencies upper-bound relaxed; at least allow minor versions, ie. `depx >=2.0.0, <3`. Publish a contraint file with the exact set of dependencies that your provider package has been tested with.
+2. Keep all dependencies upper-bound relaxed; at least allow minor versions, ie. `depx >=2.0.0, <3`. Please include a section in your Readme with the exact set of dependencies that your provider package has been tested with.
 
 #### Versioning
 
