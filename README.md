@@ -12,22 +12,22 @@
 
 <br/>
 
-This repository demonstrates best practices for building, structuring, and deploying Airflow provider packages as independent python modules available on pypi.
+This repository demonstrates best practices for building, structuring, and deploying Airflow provider packages as independent python modules available on PyPI.
 
 ## Requirements
 
 Provider repositories must be public on Github and follow the structural and technical guidelines laid out in this Readme.
 
-The package must be named in `airflow-provider-<provider-name>`.
+The package must be named as `airflow-provider-<provider-name>`.
 
 > Note: If the provider repo sits inside an organization the `provider-name` should be the same as the organization name.
 
 ## Repository Structure
 
-In building out a provider package repo, there are a few structural elements that you need:
+You'll need this package structure to construct a provider package repo:
 
 ```bash
-├── LICENSE # A license is required, MIT or Apache is preferred
+├── LICENSE # A license is required, MIT or Apache is preferred.
 ├── README.md
 ├── sample_provider # Your package import directory. This will contain all Airflow modules and example DAGs.
 │   ├── __init__.py
@@ -44,7 +44,7 @@ In building out a provider package repo, there are a few structural elements tha
 │       ├── __init__.py
 │       └── sample_sensor.py
 ├── setup.py # A setup.py file to define dependencies and how the package is built and shipped. If you'd like to use setup.cfg, that is fine as well.
-└── tests # Unit tests for all of your modules
+└── tests # Unit tests for each module.
     ├── hooks
     │   └── sample_hook_test.py
     ├── operators
@@ -58,7 +58,7 @@ In building out a provider package repo, there are a few structural elements tha
 
 ### Building Provider Package
 
-Most of what you need is included in `setup.py` and ready to customize, but you are also able to use a `setup.cfg` if you prefer going that route.
+Most of what you need is included in `setup.py` and ready to customize. You may use `setup.cfg` as a valid alternative.
 
 ### Provider Readmes
 
@@ -66,7 +66,7 @@ Readmes should contain top-level documentation about the provider's service, how
 
 #### Managing Dependencies
 
-When building providers, a few rules should be followed to remove potential for dependency conflicts.
+When building providers, these guidelines will help you avoid potential for dependency conflicts.
 
 1. It is important that the providers do not include dependencies that conflict with the underlying dependencies for a particular Airflow version. [All of the default dependencies included in the core Airflow project can be found here.](https://github.com/apache/airflow/blob/master/setup.py#L705)
 2. Keep all dependencies upper-bound relaxed; at least allow minor versions, ie. `depx >=2.0.0, <3`. Please include a section in your Readme with the exact set of dependencies that your provider package has been tested with.
@@ -78,9 +78,9 @@ Maintainers should use standard semantic versioning for releasing their packages
 ### Building Modules
 
 All modules should follow a specific set of best practices that optimize for how they will run in the context of Airflow.
-- **All classes should run without access to the internet.** This is because the Airflow scheduler parses DAGs on a regular schedule; every time that parse happens, Airflow will execute whatever is contained in the `init` method of your class. If that `init` method contains network requests, such as calls to a third party API, there will be problems due to how frequently Airflow parses the DAG file.
-- **Init methods should not call functions which only return valid objects at runtime**. This will cause a fatal import error when trying to import a module into a DAG.
-- **All operator modules will need an `execute` method.** This method will define the logic that will be implemented by the operator.
+- **All classes should run without access to the internet.** The Airflow scheduler parses DAGs on a regular schedule. Every time that parse happens, Airflow will execute whatever is contained in the `init` method of your class. If that `init` method contains network requests, such as calls to a third party API, there will be problems due to repeated network calls.
+- **Init methods should not call functions which only return valid objects at runtime**. This will cause a fatal import error when trying to import a module into a DAG. A common pattern to reference connectors and variables within DAGs is to use [Jinja Templating](https://airflow.apache.org/docs/apache-airflow/stable/concepts.html#jinja-templating).
+- **All operator modules will need an `execute` method.** This method defines the logic that the operator will implement.
 
 Modules should also take advantage of native Airflow features that allow your provider to:
 - Register custom conn types for a great UX around connecting to your tool.
@@ -96,14 +96,14 @@ The provider should contain a top-level `tests/` folder that contains unit tests
 
 Provider modules, including all hooks, operators, sensors, and transfers, should be documented via [sphinx-templated docstrings](https://pythonhosted.org/an_example_pypi_project/sphinx.html) at the top of each of their respective python file. These docstrings should include three things, all separated by blank lines in the docstring:
 1. A one-sentence description explaining *what* the module does.
-2. A long description explaining *hot* the module works. This can include more verbose language or documentation, including code blocks or blockquotes. See 
+2. A long description explaining *how* the module works. This can include more verbose language or documentation, including code blocks or blockquotes. You can read about available Sphinx markdown directives [here](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-code-block).
 3. A declarative definition of parameters that you can pass to the module, templated per the example below.
 
 [See here for an active example](https://github.com/astronomer/airflow-sample_provider/blob/main/modules/operators/sample_operator.py#L11).
 
 ## Integrating with Airflow
 
-Airflow exposes a number of plugins that you're able to interface with from your provider package if you care to do so. We *highly* encourage provider maintainers to add these bits, as they improve the UX of a provider significantly.
+Airflow exposes a number of plugins to interface from your provider package in case you care to do so. We *highly* encourage provider maintainers to add these bits, as they improve the UX of a provider significantly.
 
 To start, you'll need to define an `apache_airflow_provider ` entrypoint in your `setup.py` or `setup.cfg` file:
 
@@ -129,7 +129,7 @@ def get_provider_info():
     }
 ```
 
-Once you have this entrypoint defined, you can use some of Airflow's native features to expose custom connection types to the Airflow UI and extra links to relevant pages of documentation and information.
+Once you define the entrypoint, you can leverage Airflow's native features to expose custom connection types in the Airflow UI and additional links to relevant pages of documentation and information.
 
 ## Testing Your Package
 
@@ -139,17 +139,17 @@ To build your repo into a python wheel that can be tested, follow the steps belo
 2. cd into provider directory
 3. Run `python3 -m pip install build`
 4. Run `python3 -m build` to build the wheel
-5. Find the .whl file in /dist/*.whl
+5. Find the .whl file in `/dist/*.whl`
 6. Download the [Astro CLI](https://github.com/astronomer/astro-cli)
 7. Create a new project directory, cd into it, and run `astro dev init` to initialize a new astro project
 8. Ensure the Dockerfile contains Airflow 2.0: `FROM quay.io/astronomer/ap-airflow:2.0.0-buster-onbuild`
 9. Copy `.whl` file to the top-level of your Astro project
-10. Add to Dockerfile `RUN pip install --user airflow_provider_fivetran-0.0.1-py3-none-any.whl` to install the wheel into the containerized operating environment.
+10. Add the `.whl` file to the Dockerfile: `RUN pip install --user airflow_provider_<PROVIDER_NAME>-0.0.1-py3-none-any.whl` to install the wheel into the containerized operating environment.
 11. Copy your sample DAG to the `dags/` folder of your astro project directory.
 12. Run `astro dev start` to build the containers and run Airflow locally (you'll need Docker on your machine).
-13. When you're done, run `astro dev stop` to wind down the deployment (or `astro dev kill` to kill the containers and remove the local Docker volumes. You can also use this command if you need to rebuild the environment with a new .whl file.
+13. When you're done, run `astro dev stop` to wind down the deployment. Run `astro dev kill` to kill the containers and remove the local Docker volumes- use this command if you need to rebuild the environment with a new `.whl` file.
 
-> Note: If you are having trouble accessing the Airflow webserver locally, it is likely due to a bug in your wheel setup. To debug, run `docker ps`, grab the container ID of the scheduler, and run `docker logs <scheduler-container-id>` to see the issue.
+> Note: If you are having trouble accessing the Airflow webserver locally, there could be a bug in your wheel setup. To debug, run `docker ps`, grab the container ID of the scheduler, and run `docker logs <scheduler-container-id>` to see the issue.
 
 Once you have the local wheel built and tested, you're ready to [send us your repo](https://registry.astronomer.io/publish-rovider) to be published on [The Astronomer Registry](https://registry.astronomer.io).
 

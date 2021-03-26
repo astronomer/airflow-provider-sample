@@ -7,6 +7,7 @@ from airflow.utils.decorators import apply_defaults
 
 log = logging.getLogger(__name__)
 
+
 class SampleOperator(BaseOperator):
     """
     [Short description here explaining what the operator does] This operator prints both "Hello World!" and whatever string that I choose to pass as a parameter.
@@ -14,7 +15,8 @@ class SampleOperator(BaseOperator):
     [Long description explaining how it works and including any necessary code blocks or notes] This operator extends the BaseOperator.
 
     [Params with descriptions]
-    :param str my_operator_param: A random string to pass to the operator that will be printed after "Hello World!"
+    :param provider_conn_id: The connection to provider, containing metadata for api keys.
+    :param provider_conn_id: str    
     """
 
     @apply_defaults

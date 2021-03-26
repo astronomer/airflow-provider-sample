@@ -19,8 +19,9 @@ class SampleSensor(BaseSensorOperator):
     [Params with descriptions]
     :param str my_operator_param: A random string to pass to the operator that will be printed after "Hello World!"
 
-    :param datadog_conn_id: The connection to datadog, containing metadata for api keys.
-    :param datadog_conn_id: str
+    [Params with descriptions]
+    :param provider_conn_id: The connection to provider, containing metadata for api keys.
+    :param provider_conn_id: str    
     """
     @apply_defaults
     def __init__(
