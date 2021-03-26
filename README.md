@@ -79,6 +79,7 @@ Maintainers should use standard semantic versioning for releasing their packages
 
 All modules should follow a specific set of best practices that optimize for how they will run in the context of Airflow.
 - **All classes should run without access to the internet.** This is because the Airflow scheduler parses DAGs on a regular schedule; every time that parse happens, Airflow will execute whatever is contained in the `init` method of your class. If that `init` method contains network requests, such as calls to a third party API, there will be problems due to how frequently Airflow parses the DAG file.
+- **Init methods should not call functions which only return valid objects at runtime**. This will cause a fatal import error when trying to import a module into a DAG.
 - **All operator modules will need an `execute` method.** This method will define the logic that will be implemented by the operator.
 
 Modules should also take advantage of native Airflow features that allow your provider to:
