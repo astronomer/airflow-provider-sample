@@ -86,6 +86,8 @@ Modules should also take advantage of native Airflow features that allow your pr
 - Register custom conn types for a great UX around connecting to your tool.
 - Include `extra-links` that link your provider back to its page on the Astronomer Registry for easy user access to documentation and example DAGs.
 
+See the `Airflow Integration` section below for more information on how to build for these extra features.
+
 ### Testing Modules
 
 The provider should contain a top-level `tests/` folder that contains unit tests for all modules that exist in the repository. Maintainers may write tests in the framework of their choice- the Astronomer team and Airflow community typically uses [pytest](https://docs.pytest.org/en/stable/).
