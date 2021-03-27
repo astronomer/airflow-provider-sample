@@ -92,6 +92,8 @@ See the `Airflow Integration` section below for more information on how to build
 
 The provider should contain a top-level `tests/` folder that contains unit tests for all modules that exist in the repository. Maintainers may write tests in the framework of their choice- the Astronomer team and Airflow community typically uses [pytest](https://docs.pytest.org/en/stable/).
 
+You can test this package by running: `python3 -m unittest` from the top-level of the directory.
+
 ### Module Documentation
 
 Provider modules, including all hooks, operators, sensors, and transfers, should be documented via [sphinx-templated docstrings](https://pythonhosted.org/an_example_pypi_project/sphinx.html) at the top of each of their respective python file. These docstrings should include three things, all separated by blank lines in the docstring:

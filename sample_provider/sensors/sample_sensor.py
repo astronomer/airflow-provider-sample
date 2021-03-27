@@ -1,72 +1,68 @@
-"""Sample sensor built from Datadog sensor"""
-
-from typing import Any, Callable, Dict, List, Optional
-
-from datadog import api
+from typing import Any, Callable, Dict, Optional
 
 from airflow.exceptions import AirflowException
-from airflow.providers.datadog.hooks.datadog import DatadogHook
-from airflow.sensors.base_sensor_operator import BaseSensorOperator
+from airflow.sensors.base import BaseSensorOperator
 from airflow.utils.decorators import apply_defaults
+
+from sample_provider.hooks.sample_hook import SampleHook
 
 
 class SampleSensor(BaseSensorOperator):
     """
-    [Short description here explaining what the operator does] This is a sample sensor built from the DataDog Sensor.
+    Executes a HTTP GET statement and returns False on failure caused by
+    404 Not Found
 
-    [Long description explaining how it works and including any necessary code blocks or notes] This sensor is built from the DataDog sensor and is not intended to be used in any production context.
 
-    [Params with descriptions]
-    :param str my_operator_param: A random string to pass to the operator that will be printed after "Hello World!"
-
-    [Params with descriptions]
-    :param provider_conn_id: The connection to provider, containing metadata for api keys.
-    :param provider_conn_id: str    
+    :param sample_conn_id: The connection to run the sensor against
+    :type sample_conn_id: str
+    :param method: The HTTP request method to use
+    :type method: str
+    :param endpoint: The relative part of the full url
+    :type endpoint: str
+    :param request_params: The parameters to be added to the GET url
+    :type request_params: a dictionary of string key/value pairs
+    :param headers: The HTTP headers to be added to the GET request
+    :type headers: a dictionary of string key/value pairs
     """
+
+    template_fields = ('endpoint', 'request_params', 'headers')
+
     @apply_defaults
     def __init__(
         self,
         *,
-        datadog_conn_id: str = 'datadog_default',
-        from_seconds_ago: int = 3600,
-        up_to_seconds_from_now: int = 0,
-        priority: Optional[str] = None,
-        sources: Optional[str] = None,
-        tags: Optional[List[str]] = None,
-        response_check: Optional[Callable[[Dict[str, Any]], bool]] = None,
-        **kwargs,
+        endpoint: str,
+        sample_conn_id: str = 'conn_sample',
+        method: str = 'GET',
+        request_params: Optional[Dict[str, Any]] = None,
+        headers: Optional[Dict[str, Any]] = None,
+        **kwargs: Any,
     ) -> None:
         super().__init__(**kwargs)
-        self.datadog_conn_id = datadog_conn_id
-        self.from_seconds_ago = from_seconds_ago
-        self.up_to_seconds_from_now = up_to_seconds_from_now
-        self.priority = priority
-        self.sources = sources
-        self.tags = tags
-        self.response_check = response_check
+        self.endpoint = endpoint
+        self.sample_conn_id = sample_conn_id
+        self.request_params = request_params or {}
+        self.headers = headers or {}
 
-    def poke(self, context: Dict[str, Any]) -> bool:
-        # This instantiates the hook, but doesn't need it further,
-        # because the API authenticates globally (unfortunately),
-        # but for airflow this shouldn't matter too much, because each
-        # task instance runs in its own process anyway.
-        DatadogHook(datadog_conn_id=self.datadog_conn_id)
+        self.hook = SampleHook(method=method, sample_conn_id=sample_conn_id)
 
-        response = api.Event.query(
-            start=self.from_seconds_ago,
-            end=self.up_to_seconds_from_now,
-            priority=self.priority,
-            sources=self.sources,
-            tags=self.tags,
-        )
+    def poke(self, context: Dict[Any, Any]) -> bool:
+        from airflow.utils.operator_helpers import make_kwargs_callable
 
-        if isinstance(response, dict) and response.get('status', 'ok') != 'ok':
-            self.log.error("Unexpected Datadog result: %s", response)
-            raise AirflowException("Datadog returned unexpected result")
+        self.log.info('Poking: %s', self.endpoint)
+        try:
+            response = self.hook.run(
+                self.endpoint,
+                data=self.request_params,
+                headers=self.headers,
+            )
+            if response.status_code == 404:
+                return False
 
-        if self.response_check:
-            # run content check on response
-            return self.response_check(response)
+        except AirflowException as exc:
+            if str(exc).startswith("404"):
+                return False
 
-        # If no check was inserted, assume any event that matched yields true.
-        return len(response) > 0
+            raise exc
+
+        return True

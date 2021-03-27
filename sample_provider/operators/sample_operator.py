@@ -1,29 +1,67 @@
-"""Sample HelloWorld Operator"""
-import logging
+from typing import Any, Callable, Dict, Optional
 
+from airflow.exceptions import AirflowException
 from airflow.models import BaseOperator
-from airflow.plugins_manager import AirflowPlugin
 from airflow.utils.decorators import apply_defaults
 
-log = logging.getLogger(__name__)
+from sample_provider.hooks.sample_hook import SampleHook
 
 
 class SampleOperator(BaseOperator):
     """
-    [Short description here explaining what the operator does] This operator prints both "Hello World!" and whatever string that I choose to pass as a parameter.
+    Calls an endpoint on an HTTP system to execute an action
 
-    [Long description explaining how it works and including any necessary code blocks or notes] This operator extends the BaseOperator.
-
-    [Params with descriptions]
-    :param provider_conn_id: The connection to provider, containing metadata for api keys.
-    :param provider_conn_id: str    
+    :param sample_conn_id: connection to run the operator with
+    :type sample_conn_id: str
+    :param endpoint: The relative part of the full url. (templated)
+    :type endpoint: str
+    :param method: The HTTP method to use, default = "POST"
+    :type method: str
+    :param data: The data to pass
+    :type data: a dictionary of key/value string pairs
+    :param headers: The HTTP headers to be added to the request
+    :type headers: a dictionary of string key/value pairs
     """
 
-    @apply_defaults
-    def __init__(self, my_operator_param, *args, **kwargs):
-        self.operator_param = my_operator_param
-        super(MyFirstOperator, self).__init__(*args, **kwargs)
+    # Specify which arguments can parse with jinja templating
+    template_fields = [
+        'endpoint',
+        'data',
+        'headers',
+    ]
+    template_fields_renderers = {'headers': 'json', 'data': 'py'}
+    template_ext = ()
+    ui_color = '#f4a460'
 
-    def execute(self, context):
-        log.info("Hello World!")
-        log.info('operator_param: %s', self.operator_param)
+    @apply_defaults
+    def __init__(
+        self,
+        *,
+        endpoint: Optional[str] = None,
+        method: str = 'POST',
+        data: Any = None,
+        headers: Optional[Dict[str, str]] = None,
+        extra_options: Optional[Dict[str, Any]] = None,
+        sample_conn_id: str = 'conn_sample',
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(**kwargs)
+        self.sample_conn_id = sample_conn_id
+        self.method = method
+        self.endpoint = endpoint
+        self.headers = headers or {}
+        self.data = data or {}
+        self.extra_options = extra_options or {}
+        if kwargs.get('xcom_push') is not None:
+            raise AirflowException(
+                "'xcom_push' was deprecated, use 'BaseOperator.do_xcom_push' instead")
+
+    def execute(self, context: Dict[str, Any]) -> Any:
+
+        hook = SampleHook(self.method, sample_conn_id=self.sample_conn_id)
+
+        self.log.info("Call HTTP method")
+
+        response = hook.run(self.endpoint, self.data, self.headers)
+
+        return response.text

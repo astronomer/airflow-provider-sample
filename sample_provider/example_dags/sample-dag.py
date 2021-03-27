@@ -1,67 +1,35 @@
+"""Sample operator and sensor"""
+
+import json
+from datetime import timedelta
+
 from airflow import DAG
-from airflow.operators.dummy_operator import DummyOperator
-from airflow.operators.bash_operator import BashOperator
-from airflow.operators.python_operator import PythonOperator
-from datetime import datetime, timedelta
+from airflow.providers.http.operators.http import SimpleHttpOperator
+from airflow.providers.http.sensors.http import HttpSensor
+from airflow.utils.dates import days_ago
 
-
-def my_custom_function(ts, **kwargs):
-    """
-    This can be any python code you want and is called from the python operator. The code is not executed until
-    the task is run by the airflow scheduler.
-    """
-    print(f"I am task number {kwargs['task_number']}.
-          This DAG Run execution date is {ts} and the current time is {datetime.now()}")
-    print("Here is the full DAG Run context. It is available because provide_context=True")
-    print(kwargs)
-
-
-# Default settings applied to all tasks
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
+    'email': ['airflow@example.com'],
     'email_on_failure': False,
     'email_on_retry': False,
     'retries': 1,
-    'retry_delay': timedelta(minutes=5)
+    'retry_delay': timedelta(minutes=5),
 }
 
-# Using a DAG context manager, you don't have to specify the dag property of each task.
-with DAG('example_dag',
-         start_date=datetime(2019, 1, 1),
-         max_active_runs=3,  # See: https://airflow.apache.org/docs/stable/scheduler.html#dag-runs
-         schedule_interval=timedelta(minutes=30),
-         default_args=default_args,
-         # catchup=False # Enable if you don't want historical dag runs to run.
-         ) as dag:
+dag = DAG('example_http_operator', default_args=default_args,
+          tags=['example'], start_date=days_ago(2))
 
-    t0 = DummyOperator(
-        task_id='start'
-    )
+dag.doc_md = __doc__
 
-    t1 = DummyOperator(
-        task_id='group_bash_tasks'
-    )
-    t2 = BashOperator(
-        task_id='bash_print_date1',
-        bash_command='sleep $[ ( $RANDOM % 30 )  + 1 ]s && date')
-
-    t3 = BashOperator(
-        task_id='bash_print_date2',
-        bash_command='sleep $[ ( $RANDOM % 30 )  + 1 ]s && date')
-
-    # Generate tasks with a loop. 'task_id' must be unique.
-    for task in range(5):
-        tn = PythonOperator(
-            task_id=f'python_print_date_{task}',
-            # make sure you don't include the () of the function
-            python_callable=my_custom_function,
-            op_kwargs={'task_number': task},
-            provide_context=True
-        )
-
-        # Indented inside for loop so each task is added downstream of t0.
-        t0 >> tn
-
-    t0 >> t1
-    t1 >> [t2, t3]  # Lists can be used to specify mutliple tasks.
+# task_post_op, task_get_op and task_put_op are examples of tasks created by instantiating operators
+# [START howto_operator_http_task_post_op]
+task_post_op = SimpleHttpOperator(
+    task_id='post_op',
+    endpoint='post',
+    data=json.dumps({"priority": 5}),
+    headers={"Content-Type": "application/json"},
+    response_check=lambda response: response.json()['json']['priority'] == 5,
+    dag=dag,
+)

@@ -1,74 +1,122 @@
-"""Sample hook built from BaseHook"""
-import logging
-import random
-from typing import Any, List
+from typing import Any, Callable, Dict, Optional, Union
 
-from airflow.models.connection import Connection
-from airflow.utils.log.logging_mixin import LoggingMixin
+import requests
+import tenacity
+from requests.auth import HTTPBasicAuth
 
-log = logging.getLogger(__name__)
+from airflow.exceptions import AirflowException
+from airflow.hooks.base import BaseHook
 
 
-class SampleHook(LoggingMixin):
+class SampleHook(BaseHook):
     """
-    [Short description here explaining what the operator does] A SampleHook built from the BaseHook in Airflow. 
+    Sample Hook that interacts with an HTTP endpoint the Python requests library.
 
-    [Long description explaining how it works and including any necessary code blocks or notes] This hook is a copy of the BaseHook in Airflow and is built for demo purposes only. It is not functional.
-
-    [Params with descriptions]
-    :param provider_conn_id: The connection to provider, containing metadata for api keys.
-    :param provider_conn_id: str    
+    :param method: the API method to be called
+    :type method: str
+    :param sample_conn_id: connection that has the base API url i.e https://www.google.com/
+        and optional authentication credentials. Default headers can also be specified in
+        the Extra field in json format.
+    :type sample_conn_id: str
+    :param auth_type: The auth type for the service
+    :type auth_type: AuthBase of python requests lib
     """
 
-    @classmethod
-    def get_connections(cls, conn_id: str) -> List[Connection]:
-        """
-        Get all connections as an iterable.
+    conn_name_attr = 'sample_conn_id'
+    default_conn_name = 'http_default'
+    conn_type = 'http'
+    hook_name = 'HTTP'
 
-        :param conn_id: connection id
-        :type conn_id: str
-        :return: array of connections
-        """
-        return Connection.get_connections_from_secrets(conn_id)
+    def __init__(
+        self,
+        method: str = 'POST',
+        sample_conn_id: str = default_conn_name,
+        auth_type: Any = HTTPBasicAuth,
+    ) -> None:
+        super().__init__()
+        self.sample_conn_id = sample_conn_id
+        self.method = method.upper()
+        self.base_url: str = ""
+        self.auth_type: Any = auth_type
 
-    @classmethod
-    def get_connection(cls, conn_id: str) -> Connection:
+    def get_conn(self, headers: Optional[Dict[Any, Any]] = None) -> requests.Session:
         """
-        Get random connection selected from all connections configured with this connection id.
+        Returns http session to use with requests.
 
-        :param conn_id: connection id
-        :type conn_id: str
-        :return: connection
+        :param headers: additional headers to be passed through as a dictionary
+        :type headers: dict
         """
-        conn = random.choice(cls.get_connections(conn_id))
-        if conn.host:
-            log.info(
-                "Using connection to: id: %s. Host: %s, Port: %s, Schema: %s, Login: %s, Password: %s, "
-                "extra: %s",
-                conn.conn_id,
-                conn.host,
-                conn.port,
-                conn.schema,
-                conn.login,
-                "XXXXXXXX" if conn.password else None,
-                "XXXXXXXX" if conn.extra_dejson else None,
-            )
-        return conn
+        session = requests.Session()
 
-    @classmethod
-    def get_hook(cls, conn_id: str) -> "BaseHook":
+        if self.sample_conn_id:
+            conn = self.get_connection(self.sample_conn_id)
+
+            if conn.host and "://" in conn.host:
+                self.base_url = conn.host
+            else:
+                # schema defaults to HTTP
+                schema = conn.schema if conn.schema else "http"
+                host = conn.host if conn.host else ""
+                self.base_url = schema + "://" + host
+
+            if conn.port:
+                self.base_url = self.base_url + ":" + str(conn.port)
+            if conn.login:
+                session.auth = self.auth_type(conn.login, conn.password)
+            if conn.extra:
+                try:
+                    session.headers.update(conn.extra_dejson)
+                except TypeError:
+                    self.log.warning(
+                        'Connection to %s has invalid extra field.', conn.host)
+        if headers:
+            session.headers.update(headers)
+
+        return session
+
+    def run(
+        self,
+        endpoint: Optional[str] = None,
+        data: Optional[Union[Dict[str, Any], str]] = None,
+        headers: Optional[Dict[str, Any]] = None,
+        **request_kwargs: Any,
+    ) -> Any:
+        r"""
+        Performs the request
+
+        :param endpoint: the endpoint to be called i.e. resource/v1/query?
+        :type endpoint: str
+        :param data: payload to be uploaded or request parameters
+        :type data: dict
+        :param headers: additional headers to be passed through as a dictionary
+        :type headers: dict
         """
-        Returns default hook for this connection id.
 
-        :param conn_id: connection id
-        :type conn_id: str
-        :return: default hook for this connection
-        """
-        # TODO: set method return type to BaseHook class when on 3.7+.
-        #  See https://stackoverflow.com/a/33533514/3066428
-        connection = cls.get_connection(conn_id)
-        return connection.get_hook()
+        session = self.get_conn(headers)
 
-    def get_conn(self) -> Any:
-        """Returns connection for the hook."""
-        raise NotImplementedError()
+        if self.base_url and not self.base_url.endswith('/') and endpoint and not endpoint.startswith('/'):
+            url = self.base_url + '/' + endpoint
+        else:
+            url = (self.base_url or '') + (endpoint or '')
+
+        if self.method == 'GET':
+            # GET uses params
+            req = requests.Request(
+                self.method, url, headers=headers)
+        else:
+            # Others use data
+            req = requests.Request(
+                self.method, url, data=data, headers=headers)
+
+        prepped_request = session.prepare_request(req)
+
+        self.log.info("Sending '%s' to url: %s", self.method, url)
+
+        try:
+            response = session.send(prepped_request)
+            return response
+
+        except requests.exceptions.ConnectionError as ex:
+            self.log.warning(
+                '%s Tenacity will retry to execute the operation', ex)
+            raise ex
