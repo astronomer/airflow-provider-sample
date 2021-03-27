@@ -23,7 +23,7 @@ class SampleOperator(BaseOperator):
     :type headers: a dictionary of string key/value pairs
     """
 
-    # Specify which arguments can parse with jinja templating
+    # Specify the arguments that are allowed to parse with jinja templating
     template_fields = [
         'endpoint',
         'data',

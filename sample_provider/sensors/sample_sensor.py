@@ -25,7 +25,12 @@ class SampleSensor(BaseSensorOperator):
     :type headers: a dictionary of string key/value pairs
     """
 
-    template_fields = ('endpoint', 'request_params', 'headers')
+    # Specify the arguments that are allowed to parse with jinja templating
+    template_fields = [
+        'endpoint',
+        'request_params',
+        'headers',
+    ]
 
     @apply_defaults
     def __init__(

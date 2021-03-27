@@ -7,12 +7,12 @@ version = '2020.10.29'
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-"""Perform the package airflow-sample_provider setup."""
+"""Perform the package airflow-provider-sample setup."""
 setup(
-    name='airflow-sample_provider',
+    name='airflow-provider-sample',
     version="0.0.1",
     description='A sample provider for Astronomer.'
-    'airflow-sample_provider for Apache Airflow',
+    'airflow-provider-sample for Apache Airflow',
     long_description=long_description,
     long_description_content_type='text/markdown',
     entry_points={

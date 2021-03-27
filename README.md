@@ -45,11 +45,15 @@ You'll need this package structure to construct a provider package repo:
 │       └── sample_sensor.py
 ├── setup.py # A setup.py file to define dependencies and how the package is built and shipped. If you'd like to use setup.cfg, that is fine as well.
 └── tests # Unit tests for each module.
+    ├── __init__.py
     ├── hooks
+    │   ├── __init__.py
     │   └── sample_hook_test.py
     ├── operators
+    │   ├── __init__.py
     │   └── sample_operator_test.py
     └── sensors
+        ├── __init__.py
         └── sample_sensor_test.py
 ```
 
@@ -101,7 +105,7 @@ Provider modules, including all hooks, operators, sensors, and transfers, should
 2. A long description explaining *how* the module works. This can include more verbose language or documentation, including code blocks or blockquotes. You can read about available Sphinx markdown directives [here](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-code-block).
 3. A declarative definition of parameters that you can pass to the module, templated per the example below.
 
-[See here for an active example](https://github.com/astronomer/airflow-sample_provider/blob/main/modules/operators/sample_operator.py#L11).
+[See here for an active example](https://github.com/astronomer/airflow-provider-sample/blob/main/sample_provider/operators/sample_operator.py#L11).
 
 ## Integrating with Airflow
 
@@ -122,7 +126,7 @@ Next, you'll need to add a `get_provider_info` method to [the `__init__` file in
 ```python
 def get_provider_info():
     return {
-        "package-name": "airflow-provider-sample",
+        "package-name": "airflow-provider-sample'",
         "name": "Sample Airflow Provider", # Required
         "description": "A sample template for airflow providers.", # Required
         "hook-class-names": ["sample_provider.hooks.sample_hook.SampleHook"],

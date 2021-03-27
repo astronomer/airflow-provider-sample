@@ -1,35 +1,46 @@
-"""Sample operator and sensor"""
-
-import json
 from datetime import timedelta
+import json
 
-from airflow import DAG
-from airflow.providers.http.operators.http import SimpleHttpOperator
-from airflow.providers.http.sensors.http import HttpSensor
+from airflow.decorators import dag, task
 from airflow.utils.dates import days_ago
 
+from sample_provider.operators.sample_operator import SampleOperator
+from sample_provider.sensors.sample_sensor import SampleSensor
+
+
+# These args will get passed on to each operator
+# You can override them on a per-task basis during operator initialization
 default_args = {
     'owner': 'airflow',
-    'depends_on_past': False,
-    'email': ['airflow@example.com'],
-    'email_on_failure': False,
-    'email_on_retry': False,
-    'retries': 1,
-    'retry_delay': timedelta(minutes=5),
 }
 
-dag = DAG('example_http_operator', default_args=default_args,
-          tags=['example'], start_date=days_ago(2))
 
-dag.doc_md = __doc__
+@dag(default_args=default_args, schedule_interval=None, start_date=days_ago(2), tags=['example'])
+def sample_worflow():
+    """
+    ### Sample DAG
 
-# task_post_op, task_get_op and task_put_op are examples of tasks created by instantiating operators
-# [START howto_operator_http_task_post_op]
-task_post_op = SimpleHttpOperator(
-    task_id='post_op',
-    endpoint='post',
-    data=json.dumps({"priority": 5}),
-    headers={"Content-Type": "application/json"},
-    response_check=lambda response: response.json()['json']['priority'] == 5,
-    dag=dag,
-)
+    Showcases the sample provider package's operator and sensor.
+
+    To run this example, create a connector with:
+    - id: conn_sample
+    - type: http
+    - host: www.httpbin.org	
+    """
+
+    task_get_op = SampleOperator(
+        task_id='get_op',
+        sample_conn_id='conn_sample',
+        method='get',
+    )
+
+    task_sensor = SampleSensor(
+        task_id='sensor',
+        sample_conn_id='conn_sample',
+        endpoint=''
+    )
+
+    task_get_op >> task_sensor
+
+
+sample_worflow_dag = sample_worflow()
