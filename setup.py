@@ -2,8 +2,6 @@
 
 from setuptools import find_packages, setup
 
-version = '2020.10.29'
-
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
@@ -11,8 +9,7 @@ with open("README.md", "r") as fh:
 setup(
     name='airflow-provider-sample',
     version="0.0.1",
-    description='A sample provider for Astronomer.'
-    'airflow-provider-sample for Apache Airflow',
+    description='A sample provider package built by Astronomer.'
     long_description=long_description,
     long_description_content_type='text/markdown',
     entry_points={
@@ -21,8 +18,7 @@ setup(
         ]
     },
     license='Apache License 2.0',
-    packages=find_packages(include=['*']),
-    zip_safe=False,
+    packages=['sample_provider'],
     install_requires=['apache-airflow>=2.0'],
     setup_requires=['setuptools', 'wheel'],
     author='Pete DeJoy',
