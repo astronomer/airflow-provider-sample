@@ -9,7 +9,7 @@ with open("README.md", "r") as fh:
 setup(
     name='airflow-provider-sample',
     version="0.0.1",
-    description='A sample provider package built by Astronomer.'
+    description='A sample provider package built by Astronomer.',
     long_description=long_description,
     long_description_content_type='text/markdown',
     entry_points={
