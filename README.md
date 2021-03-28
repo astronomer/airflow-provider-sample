@@ -18,10 +18,11 @@ This repository demonstrates best practices for building, structuring, and deplo
 
 Provider repositories must be public on Github and follow the structural and technical guidelines laid out in this Readme.
 
-The package must be named as `airflow-provider-<provider-name>`.
+The package should be named as follows:
 
-> Note: If the provider repo sits inside an organization the `provider-name` should be the same as the organization name.
-
+```
+airflow-provider-<provider-name>
+```
 ## Repository Structure
 
 You'll need this package structure to construct a provider package repo:
@@ -155,7 +156,7 @@ To build your repo into a python wheel that can be tested, follow the steps belo
 12. Run `astro dev start` to build the containers and run Airflow locally (you'll need Docker on your machine).
 13. When you're done, run `astro dev stop` to wind down the deployment. Run `astro dev kill` to kill the containers and remove the local Docker volumes- use this command if you need to rebuild the environment with a new `.whl` file.
 
-> Note: If you are having trouble accessing the Airflow webserver locally, there could be a bug in your wheel setup. To debug, run `docker ps`, grab the container ID of the scheduler, and run `docker logs <scheduler-container-id>` to see the issue.
+> Note: If you are having trouble accessing the Airflow webserver locally, there could be a bug in your wheel setup. To debug, run `docker ps`, grab the container ID of the scheduler, and run `docker logs <scheduler-container-id>` to inspect the logs.
 
 Once you have the local wheel built and tested, you're ready to [send us your repo](https://registry.astronomer.io/publish-rovider) to be published on [The Astronomer Registry](https://registry.astronomer.io).
 
