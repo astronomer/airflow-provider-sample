@@ -135,7 +135,7 @@ Once you define the entrypoint, you can leverage Airflow's native features to ex
 
 Airflow allows for custom connection forms through discoverable hooks. Below is an example of a custom connection form for the Fivetran provider.
 
-<img src="https://user-images.githubusercontent.com/63181127/112665235-36458700-8e31-11eb-8fb5-ecf26e8a8323.png" width="600" />
+<img src="https://user-images.githubusercontent.com/63181127/112921463-d07b2880-90d8-11eb-871b-fc4e1c6cade9.png" width="600" />
 
 Add code to the hook class to initiate a discoverable hook and create a custom connection form. The following is an example of this code.
 
