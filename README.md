@@ -138,6 +138,95 @@ def get_provider_info():
 
 Once you define the entrypoint, you can leverage Airflow's native features to expose custom connection types in the Airflow UI and additional links to relevant pages of documentation and information.
 
+### Adding Custom Connections
+
+Airflow allows for custom connection forms through discoverable hooks. Below is an example of a custom connection form for the Fivetran provider.
+
+<img src="https://user-images.githubusercontent.com/63181127/112921463-d07b2880-90d8-11eb-871b-fc4e1c6cade9.png" width="600" />
+
+Add code to the hook class to initiate a discoverable hook and create a custom connection form. The following is an example of this code.
+
+```python
+class ExampleHook(BaseHook):
+    """ExampleHook docstring..."""
+
+    conn_name_attr = 'example_conn_id'
+    default_conn_name = 'example_default'
+    conn_type = 'example'
+    hook_name = 'Example'
+
+    @staticmethod
+    def get_connection_form_widgets() -> Dict[str, Any]:
+        """Returns connection widgets to add to connection form"""
+        from flask_appbuilder.fieldwidgets import BS3PasswordFieldWidget, BS3TextFieldWidget
+        from flask_babel import lazy_gettext
+        from wtforms import PasswordField, StringField, BooleanField
+
+        return {
+            "extra__example__bool": BooleanField(lazy_gettext('Example Boolean')),
+            "extra__example__account": StringField(
+                lazy_gettext('Account'), widget=BS3TextFieldWidget()
+            ),
+            "extra__example__secret_key": PasswordField(
+                lazy_gettext('Secret Key'), widget=BS3PasswordFieldWidget()
+            ),
+        }
+
+    @staticmethod
+    def get_ui_field_behaviour() -> Dict:
+        """Returns custom field behaviour"""
+        import json
+
+        return {
+            "hidden_fields": ['port'],
+            "relabeling": {},
+            "placeholders": {
+                'extra': json.dumps(
+                    {
+                        "example_parameter": "parameter",
+                    },
+                    indent=1,
+                ),
+                'host': 'example hostname',
+                'schema': 'example schema',
+                'login': 'example username',
+                'password': 'example password',
+                'extra__example__account': 'example account name',
+                'extra__example__secret_key': 'example secret key',
+            },
+        }
+ ```
+
+`get_connection_form_widgets()` creates extra fields using flask_appbuilder. A field created this way must be named `extra__<conn_type>__<field_name>`. A veriety of field types can be created such as text, password, boolian, intiger, etc..
+
+`get_ui_field_behaviour()` is a JSON schema describing the form field behavior. Fields can be hidden, relabeled, and be given placeholders.
+
+Add the hook class name of a discoverable hook to `"hook-class-names"` in the `get_provider_info` method mentioned above.
+ 
+### Adding Extra Links
+
+Operators can have extra links that users can use to reach an external source from the Airflow UI when interacting with an operator. This link can be created dynamically based on the context of the operator. The following code example shows how to initiate an extra link within an operator.
+
+```python
+class ExampleLink(BaseOperatorLink):
+    """Link for ExmpleOperator"""
+
+    name = 'Example Link'
+
+    def get_link(self, operator, dttm):
+        """Get link to registry page."""
+
+        registry_link = "https://{example}.com"
+        return registry_link.format(example='example')
+
+class ExampleOperator(BaseOperator):
+    """ExampleOperator docstring..."""
+
+    operator_extra_links = (Example Link(),)
+```
+
+Add the operator class name to `"extra-links"` in the `get_provider_info` method mentioned above to initiate the extra link.
+
 ## Testing Your Package
 
 To build your repo into a python wheel that can be tested, follow the steps below:
