@@ -9,7 +9,7 @@ from sample_provider.hooks.sample_hook import SampleHook
 
 class SampleOperator(BaseOperator):
     """
-    Calls an endpoint on an HTTP system to execute an action
+    Calls an endpoint on an HTTP system to execute an action.
 
     :param sample_conn_id: connection to run the operator with
     :type sample_conn_id: str
