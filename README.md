@@ -247,5 +247,5 @@ To build your repo into a python wheel that can be tested, follow the steps belo
 
 > Note: If you are having trouble accessing the Airflow webserver locally, there could be a bug in your wheel setup. To debug, run `docker ps`, grab the container ID of the scheduler, and run `docker logs <scheduler-container-id>` to inspect the logs.
 
-Once you have the local wheel built and tested, you're ready to [send us your repo](https://registry.astronomer.io/publish-rovider) to be published on [The Astronomer Registry](https://registry.astronomer.io).
+Once you have the local wheel built and tested, you're ready to [send us your repo](https://registry.astronomer.io/publish-provider) to be published on [The Astronomer Registry](https://registry.astronomer.io).
 
