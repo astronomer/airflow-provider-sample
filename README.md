@@ -18,11 +18,11 @@ Provider repositories must be public on Github and follow the structural and tec
 
 Here, you'll find information on requirements and best practices for key aspects of your project:
 
-- [File formatting](#part-1-formatting-standards)
-- [Development](#part-2-development-standards)
-- [Airflow integration](#part-3-airflow-integration-standards)
-- [Documentation](#part-4-documentation-standards)
-- [Testing](#part-5-functional-testing)
+- File formatting
+- Development
+- Airflow integration
+- Documentation
+- Testing
 
 ## Part 1: Formatting Standards
 
