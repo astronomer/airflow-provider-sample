@@ -106,7 +106,7 @@ Modules should also take advantage of native Airflow features that allow your pr
 - Register custom connection types, which improve the user experience when connecting to your tool.
 - Include `extra-links` that link your provider back to its page on the Astronomer Registry. This provides users easy access to documentation and example DAGs.
 
-See the `Airflow Integration` section below for more information on how to build in these extra features.
+Refer to the `Airflow Integration Standards` section for more information on how to build in these extra features.
 
 ### Unit testing
 
