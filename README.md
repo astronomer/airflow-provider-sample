@@ -16,6 +16,14 @@ This repository provides best practices for building, structuring, and deploying
 
 Provider repositories must be public on Github and follow the structural and technical guidelines laid out in this Readme. Ensure that all of these requirements have been met before submitting a provider package for community review.
 
+Here, you'll find information on requirements and best practices for key aspects of your project:
+
+- [File formatting](#part-1-formatting-standards)
+- [Development](#part-2-development-standards)
+- [Airflow integration](#part-3-airflow-integration-standards)
+- [Documentation](#part-4-documentation-standards)
+- [Testing](#part-5-functional-testing)
+
 ## Part 1: Formatting Standards
 
 Before writing and testing the functionality of your provider package, ensure that your project follows these formatting conventions.
@@ -263,15 +271,25 @@ The README for your provider package should give users an overview of what your 
 To build your repo into a python wheel that can be tested, follow the steps below:
 
 1. Clone the provider repo.
-2. cd into provider directory.
+2. `cd` into provider directory.
 3. Run `python3 -m pip install build`.
 4. Run `python3 -m build` to build the wheel.
 5. Find the .whl file in `/dist/*.whl`.
-6. Download the [Astro CLI](https://github.com/astronomer/astro-cli)
+6. Download the [Astro CLI](https://github.com/astronomer/astro-cli).
 7. Create a new project directory, cd into it, and run `astro dev init` to initialize a new astro project.
-8. Ensure the Dockerfile contains Airflow 2.0: `FROM quay.io/astronomer/ap-airflow:2.0.0-buster-onbuild`
+8. Ensure the Dockerfile contains the Airflow 2.0 image:
+
+   ```
+   FROM quay.io/astronomer/ap-airflow:2.0.0-buster-onbuild`
+   ```
+
 9. Copy the `.whl` file to the top level of your project directory.
-10. Add the `.whl` file to the Dockerfile: `RUN pip install --user airflow_provider_<PROVIDER_NAME>-0.0.1-py3-none-any.whl` to install the wheel into the containerized operating environment.
+10. Install `.whl` in your containerized environment by adding the following to your Dockerfile:
+
+   ```
+   RUN pip install --user airflow_provider_<PROVIDER_NAME>-0.0.1-py3-none-any.whl`
+   ```
+
 11. Copy your sample DAG to the `dags/` folder of your astro project directory.
 12. Run `astro dev start` to build the containers and run Airflow locally (you'll need Docker on your machine).
 13. When you're done, run `astro dev stop` to wind down the deployment. Run `astro dev kill` to kill the containers and remove the local Docker volume. You can also use `astro dev kill` to stop the environment before rebuilding with a new `.whl` file.
