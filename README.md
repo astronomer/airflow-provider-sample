@@ -78,7 +78,7 @@ If you followed the formatting guidelines above, you're now ready to start editi
 
 ### Python Packaging Scripts
 
-Your `setup.py` file should contain all of the appropriate metadata and dependencies required to build your package. Use the sample `setup.py` file in this repository as a starting point for your own project.
+Your `setup.py` file should contain all of the appropriate metadata and dependencies required to build your package. Use the [sample `setup.py` file](https://github.com/astronomer/airflow-provider-sample/blob/main/setup.py) in this repository as a starting point for your own project.
 
 If some of the options for building your package are variables or user-defined, you can specify a `setup.cfg` file instead.
 
