@@ -24,7 +24,7 @@ Here, you'll find information on requirements and best practices for key aspects
 - Documentation
 - Testing
 
-## Part 1: Formatting Standards
+## Formatting Standards
 
 Before writing and testing the functionality of your provider package, ensure that your project follows these formatting conventions.
 
@@ -72,7 +72,7 @@ All provider packages must adhere to the following file structure:
 ```
 
 
-## Part 2: Development Standards
+## Development Standards
 
 If you followed the formatting guidelines above, you're now ready to start editing files to include standard package functionality.
 
@@ -114,7 +114,7 @@ Your top-level `tests/` folder should include unit tests for all modules that ex
 
 You can test this package by running: `python3 -m unittest` from the top-level of the directory.
 
-## Part 3: Airflow Integration Standards
+## Airflow Integration Standards
 
 Airflow exposes a number of plugins to interface from your provider package. We highly encourage provider maintainers to add these plugins because they significantly improve the user experience when connecting to a provider.
 
@@ -243,7 +243,7 @@ class ExampleOperator(BaseOperator):
 
 To connect custom links to Airflow, add the operator class name to `"extra-links"` in the `get_provider_info` method mentioned above.
 
-## Part 4: Documentation Standards
+## Documentation Standards
 
 Creating excellent documentation is essential for explaining the purpose of your provider package and how to use it.
 
@@ -266,7 +266,7 @@ The README for your provider package should give users an overview of what your 
 - An exact set of dependencies and versions that your provider has been tested with.
 - Guidance for contributing to the provider package.
 
-## Part 5: Functional Testing Standards
+## Functional Testing Standards
 
 To build your repo into a python wheel that can be tested, follow the steps below:
 
