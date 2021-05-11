@@ -18,7 +18,8 @@ setup(
         ]
     },
     license='Apache License 2.0',
-    packages=['sample_provider'],
+    packages=['sample_provider', 'sample_provider.hooks',
+              'sample_provider.sensors', 'sample_provider.operators'],
     install_requires=['apache-airflow>=2.0'],
     setup_requires=['setuptools', 'wheel'],
     author='Pete DeJoy',
