@@ -280,14 +280,14 @@ To build your repo into a python wheel that can be tested, follow the steps belo
 8. Ensure the Dockerfile contains the Airflow 2.0 image:
 
    ```
-   FROM quay.io/astronomer/ap-airflow:2.0.0-buster-onbuild`
+   FROM quay.io/astronomer/ap-airflow:2.0.0-buster-onbuild
    ```
 
 9. Copy the `.whl` file to the top level of your project directory.
 10. Install `.whl` in your containerized environment by adding the following to your Dockerfile:
 
    ```
-   RUN pip install --user airflow_provider_<PROVIDER_NAME>-0.0.1-py3-none-any.whl`
+   RUN pip install --user airflow_provider_<PROVIDER_NAME>-0.0.1-py3-none-any.whl
    ```
 
 11. Copy your sample DAG to the `dags/` folder of your astro project directory.
