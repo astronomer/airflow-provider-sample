@@ -25,5 +25,9 @@ setup(
     author='Pete DeJoy',
     author_email='pete@astronomer.io',
     url='http://astronomer.io/',
+    classifiers=[
+        "Framework :: Apache Airflow",
+        "Framework :: Apache Airflow :: Provider",
+    ],
     python_requires='~=3.7',
 )

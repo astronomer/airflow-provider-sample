@@ -82,6 +82,11 @@ Your `setup.py` file should contain all of the appropriate metadata and dependen
 
 If some of the options for building your package are variables or user-defined, you can specify a `setup.cfg` file instead.
 
+To improve discoverability of your provider package on PyPI, it is recommended to [add classifiers](https://packaging.python.org/en/latest/tutorials/packaging-projects/#configuring-metadata) to the package's metadata. The following standard classifiers should be used in addition to any others you may choose to include:
+
+- Framework :: Apache Airflow
+- Framework :: Apache Airflow :: Provider
+
 ### Managing Dependencies
 
 When building providers, these guidelines will help you avoid potential for dependency conflicts:
