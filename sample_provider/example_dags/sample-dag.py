@@ -16,7 +16,7 @@ default_args = {
 
 
 @dag(default_args=default_args, schedule_interval=None, start_date=days_ago(2), tags=['example'])
-def sample_worflow():
+def sample_workflow():
     """
     ### Sample DAG
 
@@ -43,4 +43,4 @@ def sample_worflow():
     task_get_op >> task_sensor
 
 
-sample_worflow_dag = sample_worflow()
+sample_workflow_dag = sample_workflow()
