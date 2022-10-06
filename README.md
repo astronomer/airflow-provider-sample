@@ -127,7 +127,7 @@ Airflow exposes a number of plugins to interface from your provider package. We 
 
 To enable custom connections, you first need to define an `apache_airflow_provider ` entrypoint in your `setup.py` or `setup.cfg` file:
 
-```    
+```
 entry_points={
   "apache_airflow_provider": [
       "provider_info=sample_provider.__init__:get_provider_info"
@@ -302,3 +302,13 @@ To build your repo into a python wheel that can be tested, follow the steps belo
 > Note: If you are having trouble accessing the Airflow webserver locally, there could be a bug in your wheel setup. To debug, run `docker ps`, grab the container ID of the scheduler, and run `docker logs <scheduler-container-id>` to inspect the logs.
 
 Once you have built and tested your provider package as a Python wheel, you're ready to [send us your repo](https://registry.astronomer.io/publish) to be published on [The Astronomer Registry](https://registry.astronomer.io).
+
+## Publishing your DAG repository for the Astronomer Registry
+
+If you have never submitted your Provider repository for publication to the Astronomer Registry, [create a new release/tag for your repository](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository) on the `main` branch. Ultimately, the backend of the Astronomer Registry will check for new tags for a Provider repository to trigger adding the new version of the Provider on the Registry.
+
+> **NOTE:** Tags for the repository must follow typical [semantic versioning](https://semver.org/).
+
+Now that you've created a release/tag, head over to the [Astronomer Registry](https://registry.astronomer.io) and [fill out the form](https://registry.astronomer.io/publish) with your shiny new Provider repo details!
+
+If your Provider is currently on the Astronomer Registry, simply create a new release/tag will trigger an update to the Registry and the new version will be published.

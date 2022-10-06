@@ -1,0 +1,25 @@
+# This file is intended to be a file which specifically calls out modules to be published to the Astronomer
+# Registry as well as top-level Provider metadata. The file should not be packaged and solely lives in the
+# repo. The modules listed should pertain to latest, released version of the repo.
+
+# Python package name.
+package-name: sample_provider
+# The name of the provider to be displayed on the Registry.
+display-name: Sample Provider
+# A description to be displayed on the main Provider page.
+description: A template repo for building and releasing Airflow provider packages.
+
+# The next sections should be organized by module type (e.g. operators, hooks, functions, decorators, etc.).
+#
+# Within each section, the ``module`` value should be the path.to.the.module.specifically.
+# For example, if the import path for a function is `from sample_provider.hooks.sample_hook import SampleHook` then the
+# value should be "sample_provider.hooks.sample_hook.SampleHook".
+
+hooks:
+  - module: sample_provider.hooks.sample_hook.SampleHook
+
+operators:
+  - module: sample_provider.operators.sample_operator.SampleOperator
+
+sensors:
+  - module: sample_provider.sensors.sample_sensor.SampleSensor
