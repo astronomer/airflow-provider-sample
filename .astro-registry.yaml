@@ -8,6 +8,9 @@ package-name: sample_provider
 display-name: Sample Provider
 # A description to be displayed on the main Provider page.
 description: A template repo for building and releasing Airflow provider packages.
+# URL for where user should find the documentation for the Provider. This could be a link to the README,
+# an external docs site, etc.
+docs_url: https://github.com/astronomer/airflow-provider-sample/blob/main/README.md
 
 # The next sections should be organized by module type (e.g. operators, hooks, functions, decorators, etc.).
 #
