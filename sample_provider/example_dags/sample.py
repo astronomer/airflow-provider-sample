@@ -7,13 +7,12 @@ from sample_provider.sensors.sample import SampleSensor
 
 
 @dag(
-    start_date=datetime(2022, 1, 1),
+    start_date=datetime(2023, 1, 1),
     schedule=None,
     # ``default_args`` will get passed on to each task. You can override them on a per-task basis during
     # operator initialization.
-    default_args={"retries": 2, "sample_conn_id": "conn_sample"},
+    default_args={"retries": 2, "sample_conn_id": "sample_default"},
     tags=["example"],
-    default_view="graph",
 )
 def sample_workflow():
     """
@@ -21,10 +20,10 @@ def sample_workflow():
 
     Showcases the sample provider package's operator and sensor.
 
-    To run this example, create an HTTP connection with:
-    - id: conn_sample
-    - type: http
-    - host: www.httpbin.org
+    To run this example, create a Sample connection with:
+    - id: sample_default
+    - type: sample
+    - host: https://www.httpbin.org
     """
 
     task_get_op = SampleOperator(task_id="get_op", method="get")

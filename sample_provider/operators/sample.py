@@ -3,12 +3,20 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from airflow.exceptions import AirflowException
-from airflow.models import BaseOperator
+from airflow.models import BaseOperator, BaseOperatorLink
 
 from sample_provider.hooks.sample import SampleHook
 
 if TYPE_CHECKING:
     from airflow.utils.context import Context
+
+
+class SampleOperatorExtraLink(BaseOperatorLink):
+
+    name = "Astronomer Registry"
+
+    def get_link(self, operator: BaseOperator, *, ti_key=None):
+        return "https://registry.astronomer.io"
 
 
 class SampleOperator(BaseOperator):
@@ -37,6 +45,8 @@ class SampleOperator(BaseOperator):
     template_ext = ()
     ui_color = "#f4a460"
 
+    operator_extra_links = (SampleOperatorExtraLink(),)
+
     def __init__(
         self,
         *,
@@ -45,7 +55,7 @@ class SampleOperator(BaseOperator):
         data: Any | None = None,
         headers: dict[str, str] | None = None,
         extra_options: dict[str, Any] | None = None,
-        sample_conn_id: str = "conn_sample",
+        sample_conn_id: str = SampleHook.default_conn_name,
         **kwargs,
     ) -> None:
         super().__init__(**kwargs)

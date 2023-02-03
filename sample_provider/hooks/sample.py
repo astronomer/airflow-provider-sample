@@ -23,9 +23,42 @@ class SampleHook(BaseHook):
     """
 
     conn_name_attr = "sample_conn_id"
-    default_conn_name = "http_default"
-    conn_type = "http"
-    hook_name = "HTTP"
+    default_conn_name = "sample_default"
+    conn_type = "sample"
+    hook_name = "Sample"
+
+    @staticmethod
+    def get_connection_form_widgets() -> dict[str, Any]:
+        """Returns connection widgets to add to connection form"""
+        from flask_appbuilder.fieldwidgets import BS3PasswordFieldWidget, BS3TextFieldWidget
+        from flask_babel import lazy_gettext
+        from wtforms import PasswordField, StringField
+
+        return {
+            "account": StringField(lazy_gettext("Account"), widget=BS3TextFieldWidget()),
+            "secret_key": PasswordField(lazy_gettext("Secret Key"), widget=BS3PasswordFieldWidget()),
+        }
+
+    @staticmethod
+    def get_ui_field_behaviour() -> dict:
+        """Returns custom field behaviour"""
+        import json
+
+        return {
+            "hidden_fields": ["port", "password", "login", "schema"],
+            "relabeling": {},
+            "placeholders": {
+                "extra": json.dumps(
+                    {
+                        "example_parameter": "parameter",
+                    },
+                    indent=4,
+                ),
+                "account": "HeirFlough",
+                "secret_key": "mY53cr3tk3y!",
+                "host": "https://www.httpbin.org",
+            },
+        }
 
     def __init__(
         self,

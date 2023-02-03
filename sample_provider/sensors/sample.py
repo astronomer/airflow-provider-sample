@@ -38,7 +38,7 @@ class SampleSensor(BaseSensorOperator):
         self,
         *,
         endpoint: str,
-        sample_conn_id: str = "conn_sample",
+        sample_conn_id: str = SampleHook.default_conn_name,
         method: str = "GET",
         request_params: dict[str, Any] | None = None,
         headers: dict[str, Any] | None = None,
