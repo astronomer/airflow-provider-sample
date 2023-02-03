@@ -1,17 +1,19 @@
-from typing import Any, Callable, Dict, Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
 
 from airflow.exceptions import AirflowException
 from airflow.sensors.base import BaseSensorOperator
-from airflow.utils.decorators import apply_defaults
 
 from sample_provider.hooks.sample import SampleHook
+
+if TYPE_CHECKING:
+    from airflow.utils.context import Context
 
 
 class SampleSensor(BaseSensorOperator):
     """
-    Executes a HTTP GET statement and returns False on failure caused by
-    404 Not Found
-
+    Executes a HTTP GET statement and returns False on failure caused by 404 Not Found.
 
     :param sample_conn_id: The connection to run the sensor against
     :type sample_conn_id: str
@@ -27,21 +29,20 @@ class SampleSensor(BaseSensorOperator):
 
     # Specify the arguments that are allowed to parse with jinja templating
     template_fields = [
-        'endpoint',
-        'request_params',
-        'headers',
+        "endpoint",
+        "request_params",
+        "headers",
     ]
 
-    @apply_defaults
     def __init__(
         self,
         *,
         endpoint: str,
-        sample_conn_id: str = 'conn_sample',
-        method: str = 'GET',
-        request_params: Optional[Dict[str, Any]] = None,
-        headers: Optional[Dict[str, Any]] = None,
-        **kwargs: Any,
+        sample_conn_id: str = "conn_sample",
+        method: str = "GET",
+        request_params: dict[str, Any] | None = None,
+        headers: dict[str, Any] | None = None,
+        **kwargs,
     ) -> None:
         super().__init__(**kwargs)
         self.endpoint = endpoint
@@ -51,10 +52,8 @@ class SampleSensor(BaseSensorOperator):
 
         self.hook = SampleHook(method=method, sample_conn_id=sample_conn_id)
 
-    def poke(self, context: Dict[Any, Any]) -> bool:
-        from airflow.utils.operator_helpers import make_kwargs_callable
-
-        self.log.info('Poking: %s', self.endpoint)
+    def poke(self, context: Context) -> bool:
+        self.log.info("Poking: %s", self.endpoint)
         try:
             response = self.hook.run(
                 self.endpoint,
