@@ -4,7 +4,7 @@ from airflow.exceptions import AirflowException
 from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
 
-from sample_provider.hooks.sample_hook import SampleHook
+from sample_provider.hooks.sample import SampleHook
 
 
 class SampleOperator(BaseOperator):

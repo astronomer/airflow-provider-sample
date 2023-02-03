@@ -5,7 +5,7 @@ Requires the unittest, pytest, and requests-mock Python libraries.
 
 Run test:
 
-    python3 -m unittest tests.hooks.test_sample_hook.TestSampleHook
+    python3 -m unittest tests.hooks.test_sample.TestSampleHook
 
 """
 
@@ -13,11 +13,10 @@ import logging
 import os
 import pytest
 import requests_mock
-import unittest
 from unittest import mock
 
 # Import Hook
-from sample_provider.hooks.sample_hook import SampleHook
+from sample_provider.hooks.sample import SampleHook
 
 
 log = logging.getLogger(__name__)
@@ -25,7 +24,7 @@ log = logging.getLogger(__name__)
 
 # Mock the `conn_sample` Airflow connection
 @mock.patch.dict('os.environ', AIRFLOW_CONN_CONN_SAMPLE='http://https%3A%2F%2Fwww.httpbin.org%2F')
-class TestSampleHook(unittest.TestCase):
+class TestSampleHook():
     """
     Test Sample Hook.
     """
@@ -77,7 +76,3 @@ class TestSampleHook(unittest.TestCase):
 
         # Assert the API call returns expected mocked payload
         assert payload['data'] == 'mocked response'
-
-
-if __name__ == '__main__':
-    unittest.main()

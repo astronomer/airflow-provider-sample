@@ -13,11 +13,10 @@ import logging
 import os
 import pytest
 import requests_mock
-import unittest
 from unittest import mock
 
 # Import Sensor
-from sample_provider.sensors.sample_sensor import SampleSensor
+from sample_provider.sensors.sample import SampleSensor
 
 
 log = logging.getLogger(__name__)
@@ -25,7 +24,7 @@ log = logging.getLogger(__name__)
 
 # Mock the `conn_sample` Airflow connection
 @mock.patch.dict('os.environ', AIRFLOW_CONN_CONN_SAMPLE='http://https%3A%2F%2Fwww.httpbin.org%2F')
-class TestSampleSensor(unittest.TestCase):
+class TestSampleSensor:
     """
     Test Sample Sensor.
     """

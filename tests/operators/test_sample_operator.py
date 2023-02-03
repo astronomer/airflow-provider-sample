@@ -14,11 +14,10 @@ import logging
 import os
 import pytest
 import requests_mock
-import unittest
 from unittest import mock
 
 # Import Operator
-from sample_provider.operators.sample_operator import SampleOperator
+from sample_provider.operators.sample import SampleOperator
 
 
 log = logging.getLogger(__name__)
@@ -26,7 +25,7 @@ log = logging.getLogger(__name__)
 
 # Mock the `conn_sample` Airflow connection
 @mock.patch.dict('os.environ', AIRFLOW_CONN_CONN_SAMPLE='http://https%3A%2F%2Fwww.httpbin.org%2F')
-class TestSampleOperator(unittest.TestCase):
+class TestSampleOperator:
     """
     Test Sample Operator.
     """
@@ -52,6 +51,3 @@ class TestSampleOperator(unittest.TestCase):
         # Assert the API call returns expected mocked payload
         assert response_payload_json['data'] == 'mocked response'
 
-
-if __name__ == '__main__':
-    unittest.main()
