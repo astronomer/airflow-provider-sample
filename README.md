@@ -46,29 +46,28 @@ All provider packages must adhere to the following file structure:
 ├── sample_provider # Your package import directory. This will contain all Airflow modules and example DAGs.
 │   ├── __init__.py
 │   ├── example_dags
-│   │   ├── __init__.py
-│   │   └── sample-dag.py
+│   │   └── sample.py
 │   ├── hooks
 │   │   ├── __init__.py
-│   │   └── sample_hook.py
+│   │   └── sample.py
 │   ├── operators
 │   │   ├── __init__.py
-│   │   └── sample_operator.py
+│   │   └── sample.py
 │   └── sensors
 │       ├── __init__.py
-│       └── sample_sensor.py
+│       └── sample.py
 ├── setup.py # A setup.py file to define dependencies and how the package is built and shipped. If you'd like to use setup.cfg, that is fine as well.
 └── tests # Unit tests for each module.
     ├── __init__.py
     ├── hooks
     │   ├── __init__.py
-    │   └── sample_hook_test.py
+    │   └── test_sample_hook.py
     ├── operators
     │   ├── __init__.py
-    │   └── sample_operator_test.py
+    │   └── test_sample_operator.py
     └── sensors
         ├── __init__.py
-        └── sample_sensor_test.py
+        └── test_sample_sensor.py
 ```
 
 
@@ -140,12 +139,12 @@ Next, you need to add a `get_provider_info` method to the `__init__` file in you
 ```python
 def get_provider_info():
     return {
-        "package-name": "airflow-provider-sample'",
-        "name": "Sample Airflow Provider", # Required
-        "description": "A sample template for airflow providers.", # Required
-        "hook-class-names": ["sample_provider.hooks.sample_hook.SampleHook"],
-        "extra-links": ["sample_provider.operators.sample_operator.ExtraLink"],
-        "versions": ["0.0.1"] # Required
+        "name": "Sample Apache Airflow Provider",  # Required
+        "description": "A sample template for Apache Airflow providers.",  # Required
+        "connection-types": [
+            {"connection-type": "sample", "hook-class-name": "sample_provider.hooks.sample.SampleHook"}
+        ],
+        "versions": ["1.0.0"] # Required
     }
 ```
 
@@ -176,11 +175,11 @@ class ExampleHook(BaseHook):
         from wtforms import PasswordField, StringField, BooleanField
 
         return {
-            "extra__example__bool": BooleanField(lazy_gettext('Example Boolean')),
-            "extra__example__account": StringField(
+            "bool": BooleanField(lazy_gettext('Example Boolean')),
+            "account": StringField(
                 lazy_gettext('Account'), widget=BS3TextFieldWidget()
             ),
-            "extra__example__secret_key": PasswordField(
+            "secret_key": PasswordField(
                 lazy_gettext('Secret Key'), widget=BS3PasswordFieldWidget()
             ),
         }
@@ -198,43 +197,39 @@ class ExampleHook(BaseHook):
                     {
                         "example_parameter": "parameter",
                     },
-                    indent=1,
+                    indent=4,
                 ),
                 'host': 'example hostname',
                 'schema': 'example schema',
                 'login': 'example username',
                 'password': 'example password',
-                'extra__example__account': 'example account name',
-                'extra__example__secret_key': 'example secret key',
+                'account': 'example account name',
+                'secret_key': 'example secret key',
             },
         }
  ```
 
 Some notes about using custom connections:
 
-- `get_connection_form_widgets()` creates extra fields using flask_appbuilder. Extra fields are defined in the following format:
-
-   ```
-   extra__<conn_type>__<field_name>
-   ```
-
-   A variety of field types can be created using this function, such as strings, passwords, booleans, and integers.
+- `get_connection_form_widgets()` creates extra fields using flask_appbuilder. A variety of field types can be created using this function, such as strings, passwords, booleans, and integers.
 
 - `get_ui_field_behaviour()` is a JSON schema describing the form field behavior. Fields can be hidden, relabeled, and given placeholder values.
 
-- To connect a form to Airflow, add the hook class name of a discoverable hook to `"hook-class-names"` in the `get_provider_info` method as mentioned in `Defining an entrypoint`.
+- To connect a form to Airflow, add the hook class name and connection type of a discoverable hook to `"connection-types"` in the `get_provider_info` method as mentioned in `Defining an entrypoint`.
 
 ### Adding Custom Links
 
 Operators can add custom links that users can click to reach an external source when interacting with an operator in the Airflow UI. This link can be created dynamically based on the context of the operator. The following code example shows how to initiate an extra link within an operator:
 
 ```python
+from airflow.models import BaseOperator, BaseOperatorLink
+
 class ExampleLink(BaseOperatorLink):
     """Link for ExmpleOperator"""
 
     name = 'Example Link'
 
-    def get_link(self, operator, dttm):
+    def get_link(self, operator: BaseOperator, *, ti_key=None):
         """Get link to registry page."""
 
         registry_link = "https://{example}.com"
@@ -243,7 +238,7 @@ class ExampleLink(BaseOperatorLink):
 class ExampleOperator(BaseOperator):
     """ExampleOperator docstring..."""
 
-    operator_extra_links = (Example Link(),)
+    operator_extra_links = (Example_Link(),)
 ```
 
 To connect custom links to Airflow, add the operator class name to `"extra-links"` in the `get_provider_info` method mentioned above.
