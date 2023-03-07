@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Tuple
 
 import requests
 from requests.auth import HTTPBasicAuth
@@ -149,3 +149,11 @@ class SampleHook(BaseHook):
         except requests.exceptions.ConnectionError as ex:
             self.log.warning("%s Tenacity will retry to execute the operation", ex)
             raise ex
+
+    def test_connection(self) -> Tuple[bool, str]:
+        """Test a connection"""
+        try:
+            self.run()
+            return True, "Connection successfully tested"
+        except Exception as e:
+            return False, str(e)
