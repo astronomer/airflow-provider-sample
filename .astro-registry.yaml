@@ -5,9 +5,7 @@
 # Python package name.
 package-name: airflow-provider-sample
 # The name of the provider to be displayed on the Registry.
-display-name: Airflow Sample Provider
-# A description to be displayed on the main Provider page.
-description: A template repo for building and releasing Apache Airflow provider packages.
+display-name: Sample
 # URL for where user should find the documentation for the Provider. This could be a link to the README,
 # an external docs site, etc.
 docs_url: https://github.com/astronomer/airflow-provider-sample/blob/main/README.md
