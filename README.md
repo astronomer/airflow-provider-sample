@@ -124,7 +124,7 @@ Airflow exposes a number of plugins to interface from your provider package. We 
 
 ### Defining an entrypoint
 
-To enable custom connections, you first need to define an `apache_airflow_provider ` entrypoint in your `setup.py` or `setup.cfg` file:
+To enable custom connections, you first need to define an `apache_airflow_provider` entrypoint in your `setup.py` or `setup.cfg` file:
 
 ```
 entry_points={
@@ -139,12 +139,14 @@ Next, you need to add a `get_provider_info` method to the `__init__` file in you
 ```python
 def get_provider_info():
     return {
+        "package-name": "airflow-provider-sample",  # Required
         "name": "Sample Apache Airflow Provider",  # Required
         "description": "A sample template for Apache Airflow providers.",  # Required
         "connection-types": [
             {"connection-type": "sample", "hook-class-name": "sample_provider.hooks.sample.SampleHook"}
         ],
-        "versions": ["1.0.0"] # Required
+        "extra-links": ["sample_provider.operators.sample.SampleOperatorExtraLink"],
+        "versions": ["1.0.0"],  # Required
     }
 ```
 
@@ -159,52 +161,46 @@ Airflow enables custom connection forms through discoverable hooks. The followin
 Add code to the hook class to initiate a discoverable hook and create a custom connection form. The following code defines a hook and a custom connection form:
 
 ```python
-class ExampleHook(BaseHook):
-    """ExampleHook docstring..."""
+class SampleHook(BaseHook):
+    """
+    Hook docstring ...
+    """
 
-    conn_name_attr = 'example_conn_id'
-    default_conn_name = 'example_default'
-    conn_type = 'example'
-    hook_name = 'Example'
+    conn_name_attr = "sample_conn_id"
+    default_conn_name = "sample_default"
+    conn_type = "sample"
+    hook_name = "Sample"
 
     @staticmethod
-    def get_connection_form_widgets() -> Dict[str, Any]:
+    def get_connection_form_widgets() -> dict[str, Any]:
         """Returns connection widgets to add to connection form"""
         from flask_appbuilder.fieldwidgets import BS3PasswordFieldWidget, BS3TextFieldWidget
         from flask_babel import lazy_gettext
-        from wtforms import PasswordField, StringField, BooleanField
+        from wtforms import PasswordField, StringField
 
         return {
-            "bool": BooleanField(lazy_gettext('Example Boolean')),
-            "account": StringField(
-                lazy_gettext('Account'), widget=BS3TextFieldWidget()
-            ),
-            "secret_key": PasswordField(
-                lazy_gettext('Secret Key'), widget=BS3PasswordFieldWidget()
-            ),
+            "account": StringField(lazy_gettext("Account"), widget=BS3TextFieldWidget()),
+            "secret_key": PasswordField(lazy_gettext("Secret Key"), widget=BS3PasswordFieldWidget()),
         }
 
     @staticmethod
-    def get_ui_field_behaviour() -> Dict:
+    def get_ui_field_behaviour() -> dict:
         """Returns custom field behaviour"""
         import json
 
         return {
-            "hidden_fields": ['port'],
+            "hidden_fields": ["port", "password", "login", "schema"],
             "relabeling": {},
             "placeholders": {
-                'extra': json.dumps(
+                "extra": json.dumps(
                     {
                         "example_parameter": "parameter",
                     },
                     indent=4,
                 ),
-                'host': 'example hostname',
-                'schema': 'example schema',
-                'login': 'example username',
-                'password': 'example password',
-                'account': 'example account name',
-                'secret_key': 'example secret key',
+                "account": "HeirFlough",
+                "secret_key": "mY53cr3tk3y!",
+                "host": "https://www.httpbin.org",
             },
         }
  ```
@@ -224,21 +220,19 @@ Operators can add custom links that users can click to reach an external source 
 ```python
 from airflow.models import BaseOperator, BaseOperatorLink
 
-class ExampleLink(BaseOperatorLink):
-    """Link for ExmpleOperator"""
+class SampleOperatorExtraLink(BaseOperatorLink):
 
-    name = 'Example Link'
+    name = "Astronomer Registry"
 
     def get_link(self, operator: BaseOperator, *, ti_key=None):
-        """Get link to registry page."""
+        return "https://registry.astronomer.io"
 
-        registry_link = "https://{example}.com"
-        return registry_link.format(example='example')
+class SampleOperator(BaseOperator):
+    """
+    Operator docstring ...
+    """
 
-class ExampleOperator(BaseOperator):
-    """ExampleOperator docstring..."""
-
-    operator_extra_links = (Example_Link(),)
+    operator_extra_links = (SampleOperatorExtraLink(),)
 ```
 
 To connect custom links to Airflow, add the operator class name to `"extra-links"` in the `get_provider_info` method mentioned above.
@@ -277,10 +271,10 @@ To build your repo into a python wheel that can be tested, follow the steps belo
 5. Find the .whl file in `/dist/*.whl`.
 6. Download the [Astro CLI](https://github.com/astronomer/astro-cli).
 7. Create a new project directory, cd into it, and run `astro dev init` to initialize a new astro project.
-8. Ensure the Dockerfile contains the Airflow 2.0 image:
+8. Ensure the Dockerfile contains an [Astro Runtime image that supports _at least_ Airflow 2.3.0](https://docs.astronomer.io/astro/runtime-release-notes). For example:
 
    ```
-   FROM quay.io/astronomer/ap-airflow:2.0.0-buster-onbuild
+   FROM quay.io/astronomer/astro-runtime:8.0.0
    ```
 
 9. Copy the `.whl` file to the top level of your project directory.
