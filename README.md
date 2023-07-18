@@ -56,7 +56,7 @@ All provider packages must adhere to the following file structure:
 │   └── sensors
 │       ├── __init__.py
 │       └── sample.py
-├── setup.py # A setup.py file to define dependencies and how the package is built and shipped. If you'd like to use setup.cfg, that is fine as well.
+├── pyproject.toml # A file to define dependencies and how the package is built and shipped.
 └── tests # Unit tests for each module.
     ├── __init__.py
     ├── hooks
@@ -77,9 +77,7 @@ If you followed the formatting guidelines above, you're now ready to start editi
 
 ### Python Packaging Scripts
 
-Your `setup.py` file should contain all of the appropriate metadata and dependencies required to build your package. Use the [sample `setup.py` file](https://github.com/astronomer/airflow-provider-sample/blob/main/setup.py) in this repository as a starting point for your own project.
-
-If some of the options for building your package are variables or user-defined, you can specify a `setup.cfg` file instead.
+Your `pyproject.toml` file should contain all of the appropriate metadata and dependencies required to build your package. Use the [sample `pyproject.toml` file](https://github.com/astronomer/airflow-provider-sample/blob/main/pyproject.toml) in this repository as a starting point for your own project.
 
 To improve discoverability of your provider package on PyPI, it is recommended to [add classifiers](https://packaging.python.org/en/latest/tutorials/packaging-projects/#configuring-metadata) to the package's metadata. The following standard classifiers should be used in addition to any others you may choose to include:
 
@@ -90,7 +88,7 @@ To improve discoverability of your provider package on PyPI, it is recommended t
 
 When building providers, these guidelines will help you avoid potential for dependency conflicts:
 
-- It is important that the providers do not include dependencies that conflict with the underlying dependencies for a particular Airflow version. All of the default dependencies included in the core Airflow project can be found in the Airflow [setup.py file](https://github.com/apache/airflow/blob/master/setup.py#L705).
+- It is important that the providers do not include dependencies that conflict with the underlying dependencies for a particular Airflow version. All of the default dependencies included in the core Airflow project can be found in the Airflow [setup.cfg file](https://github.com/apache/airflow/blob/9d0006fb9ee9c1b4742613fa3c1e82064eda6ba8/setup.cfg#L67).
 - Keep all dependencies relaxed at the upper bound. At the lower bound, specify minor versions (for example, `depx >=2.0.0, <3`).
 
 ### Versioning
@@ -124,29 +122,28 @@ Airflow exposes a number of plugins to interface from your provider package. We 
 
 ### Defining an entrypoint
 
-To enable custom connections, you first need to define an `apache_airflow_provider` entrypoint in your `setup.py` or `setup.cfg` file:
+To enable custom connections, you first need to define an `apache_airflow_provider` entrypoint in your `pyproject.toml` file:
 
 ```
-entry_points={
-  "apache_airflow_provider": [
-      "provider_info=sample_provider.__init__:get_provider_info"
-        ]
-    }
+[project.entry-points.apache_airflow_provider]
+provider_info = "sample_provider.__init__:get_provider_info"
 ```
 
 Next, you need to add a `get_provider_info` method to the `__init__` file in your top-level provider folder. This function needs to return certain metadata associated with your package in order for Airflow to use it at runtime:
 
 ```python
+__version__ = "1.0.0"
+
 def get_provider_info():
     return {
         "package-name": "airflow-provider-sample",  # Required
-        "name": "Sample Apache Airflow Provider",  # Required
+        "name": "Sample",  # Required
         "description": "A sample template for Apache Airflow providers.",  # Required
         "connection-types": [
             {"connection-type": "sample", "hook-class-name": "sample_provider.hooks.sample.SampleHook"}
         ],
         "extra-links": ["sample_provider.operators.sample.SampleOperatorExtraLink"],
-        "versions": ["1.0.0"],  # Required
+        "versions": [__version__],  # Required
     }
 ```
 
