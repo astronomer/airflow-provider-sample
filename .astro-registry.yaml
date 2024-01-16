@@ -9,7 +9,7 @@ package-name: airflow-provider-sample
 display-name: Sample
 # URL where users should find the documentation for the provider. This could be a link to the README,
 # an external docs site, etc.
-docs_url: https://github.com/astronomer/airflow-provider-sample/blob/main/README.md
+docs-url: https://github.com/astronomer/airflow-provider-sample/blob/main/README.md
 
 # The next sections should be organized by module type (e.g. operators, hooks, functions, decorators, etc.).
 #
