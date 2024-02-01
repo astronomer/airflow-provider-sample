@@ -10,9 +10,6 @@ Run test:
 """
 
 import logging
-import os
-import pytest
-import requests_mock
 from unittest import mock
 
 # Import Sensor
@@ -29,11 +26,10 @@ class TestSampleSensor:
     Test Sample Sensor.
     """
 
-    @requests_mock.mock()
-    def test_sensor_success(self, m):
+    def test_sensor_success(self, requests_mock):
 
         # Mock endpoint
-        m.get('https://www.httpbin.org/check_status')
+        requests_mock.get('https://www.httpbin.org/check_status')
 
         operator = SampleSensor(
             task_id='sample_sensor_check',
@@ -42,13 +38,12 @@ class TestSampleSensor:
         )
 
         # Assert poke returns True
-        self.assertTrue(operator.poke(context={}))
+        assert operator.poke(context={}) == True
 
-    @requests_mock.mock()
-    def test_sensor_fail(self, m):
+    def test_sensor_fail(self, requests_mock):
 
         # Mock endpoint
-        m.get('https://www.httpbin.org/check_status', status_code=404)
+        requests_mock.get('https://www.httpbin.org/check_status', status_code=404)
 
         operator = SampleSensor(
             task_id='sample_sensor_check',
@@ -57,7 +52,7 @@ class TestSampleSensor:
         )
 
         # Assert poke returns False when endpoint returns 404
-        self.assertFalse(operator.poke(context={}))
+        assert operator.poke(context={}) == False
 
 
 if __name__ == '__main__':

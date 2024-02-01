@@ -114,7 +114,9 @@ Refer to the `Airflow Integration Standards` section for more information on how
 
 Your top-level `tests/` folder should include unit tests for all modules that exist in the repository. You can write tests in the framework of your choice, but the Astronomer team and Airflow community typically use [pytest](https://docs.pytest.org/en/stable/).
 
-You can test this package by running: `python3 -m unittest` from the top-level of the directory.
+Test dependencies are available as optional dependencies. You can install them by running: `pip install -e '.[devel-tests]`
+
+You can test this package by running: `pytest` from the top-level of the directory.
 
 ## Airflow Integration Standards
 
