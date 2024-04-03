@@ -16,17 +16,16 @@ import requests_mock
 from unittest import mock
 
 # Import Hook
-from sample_provider.hooks.sample import SampleHook
-
+from greenplum_provider.hooks.greenplum_hook import GreenplumHook
 
 log = logging.getLogger(__name__)
 
 
 # Mock the `conn_sample` Airflow connection
 @mock.patch.dict('os.environ', AIRFLOW_CONN_CONN_SAMPLE='http://https%3A%2F%2Fwww.httpbin.org%2F')
-class TestSampleHook():
+class TestGreenplumHook():
     """
-    Test Sample Hook.
+    Test Greenplum Hook.
     """
 
     @requests_mock.mock()
@@ -36,7 +35,7 @@ class TestSampleHook():
         m.post('https://www.httpbin.org/', json={'data': 'mocked response'})
 
         # Instantiate hook
-        hook = SampleHook(
+        hook = GreenplumHook(
             sample_conn_id='conn_sample',
             method='post'
         )
@@ -60,7 +59,7 @@ class TestSampleHook():
         m.get('https://www.httpbin.org/', json={'data': 'mocked response'})
 
         # Instantiate hook
-        hook = SampleHook(
+        hook = GreenplumHook(
             sample_conn_id='conn_sample',
             method='get'
         )

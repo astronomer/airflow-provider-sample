@@ -3,13 +3,13 @@
 # repo. The modules listed should pertain to latest, released version of the repo.
 
 # Python package name.
-package-name: airflow-provider-sample
+package-name: airflow-provider-greenplum
 # The name of the provider to be displayed on the Registry. This is typically the name of the service users
 # will interact with when using the provider. Ideally, avoid "Airflow" and "Provider" in the name.
-display-name: Sample
+display-name: Greenplum
 # URL where users should find the documentation for the provider. This could be a link to the README,
 # an external docs site, etc.
-docs-url: https://github.com/astronomer/airflow-provider-sample/blob/main/README.md
+docs-url: https://github.com/ikomar-ru/airflow-provider-greenplum/blob/main/README.md
 
 # The next sections should be organized by module type (e.g. operators, hooks, functions, decorators, etc.).
 #
@@ -18,10 +18,10 @@ docs-url: https://github.com/astronomer/airflow-provider-sample/blob/main/README
 # should be "sample_provider.hooks.sample.SampleHook".
 
 hooks:
-  - module: sample_provider.hooks.sample.SampleHook
+  - module: greenplum_provider.hooks.greenplum_hook.GreenplumHook
 
-operators:
-  - module: sample_provider.operators.sample.SampleOperator
-
-sensors:
-  - module: sample_provider.sensors.sample.SampleSensor
+#operators:
+#  - module: sample_provider.operators.sample.SampleOperator
+#
+#sensors:
+#  - module: sample_provider.sensors.sample.SampleSensor

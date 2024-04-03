@@ -6,15 +6,13 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "airflow-provider-sample"
+name = "airflow-provider-greenplum"
 authors = [
-    { name = "Pete DeJoy", email = "pete@astronomer.io" },
-    { name = "Josh Fell", email = "josh.d.fell@astronomer.io" },
-    { name = "Astronomer", email = "humans@astronomer.io" },
+    { name = "Komarov Ilia", email = "ikomar@gmail.com" },
 
 ]
 license = { text = "Apache License 2.0" }
-description = "A sample Apache Airflow provider package built by Astronomer."
+description = "Copy of Postgres provider with changed connection type"
 classifiers = [
     "Framework :: Apache Airflow",
     "Framework :: Apache Airflow :: Provider",
@@ -42,7 +40,7 @@ provider_info = "sample_provider.__init__:get_provider_info"
 include-package-data = false
 
 [tool.setuptools.dynamic]
-version = { attr = "sample_provider.__version__" }
+version = { attr = "greenplum_provider.__version__" }
 
 [tool.setuptools.packages.find]
 exclude = [
