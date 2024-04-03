@@ -27,14 +27,14 @@ dependencies = [
 
 [project.urls]
 Homepage = "https://astronomer.io"
-Source = "https://github.com/astronomer/airflow-provider-sample/"
+Source = "https://github.com/ikomar-ru/airflow-provider-greenplum/"
 
 [project.readme]
 file = "README.md"
 content-type = "text/markdown"
 
 [project.entry-points.apache_airflow_provider]
-provider_info = "sample_provider.__init__:get_provider_info"
+provider_info = "greenplum_provider.__init__:get_provider_info"
 
 [tool.setuptools]
 include-package-data = false

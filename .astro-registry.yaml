@@ -14,14 +14,14 @@ docs-url: https://github.com/ikomar-ru/airflow-provider-greenplum/blob/main/READ
 # The next sections should be organized by module type (e.g. operators, hooks, functions, decorators, etc.).
 #
 # Within each section, the ``module`` value should be the path.to.the.module.specifically. For example, if the
-# import path for a function is `from sample_provider.hooks.sample_hook import SampleHook` then the value
-# should be "sample_provider.hooks.sample.SampleHook".
+# import path for a function is `from greenplum_provider.hooks.greenplum_hook import GreenplumHook` then the value
+# should be "greenplum_provider.hooks.sample.SampleHook".
 
 hooks:
   - module: greenplum_provider.hooks.greenplum_hook.GreenplumHook
 
 #operators:
-#  - module: sample_provider.operators.sample.SampleOperator
+#  - module: greenplum_provider.operators.greenplum_operator.GreenplumOperator
 #
 #sensors:
-#  - module: sample_provider.sensors.sample.SampleSensor
+#  - module: greenplum_provider.sensors.greenplum_sensor.GreenplumSensor

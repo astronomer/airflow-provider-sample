@@ -43,7 +43,7 @@ All provider packages must adhere to the following file structure:
 ```bash
 ├── LICENSE # A license is required, MIT or Apache is preferred.
 ├── README.md
-├── sample_provider # Your package import directory. This will contain all Airflow modules and example DAGs.
+├── greenplum_provider # Your package import directory. This will contain all Airflow modules and example DAGs.
 │   ├── __init__.py
 │   ├── example_dags
 │   │   └── sample.py
@@ -126,7 +126,7 @@ To enable custom connections, you first need to define an `apache_airflow_provid
 
 ```
 [project.entry-points.apache_airflow_provider]
-provider_info = "sample_provider.__init__:get_provider_info"
+provider_info = "greenplum_provider.__init__:get_provider_info"
 ```
 
 Next, you need to add a `get_provider_info` method to the `__init__` file in your top-level provider folder. This function needs to return certain metadata associated with your package in order for Airflow to use it at runtime:
@@ -140,9 +140,9 @@ def get_provider_info():
         "name": "Sample",  # Required
         "description": "A sample template for Apache Airflow providers.",  # Required
         "connection-types": [
-            {"connection-type": "sample", "hook-class-name": "sample_provider.hooks.sample.SampleHook"}
+            {"connection-type": "sample", "hook-class-name": "greenplum_provider.hooks.sample.SampleHook"}
         ],
-        "extra-links": ["sample_provider.operators.sample.SampleOperatorExtraLink"],
+        "extra-links": ["greenplum_provider.operators.sample.GreenplumOperatorExtraLink"],
         "versions": [__version__],  # Required
     }
 ```
@@ -158,15 +158,15 @@ Airflow enables custom connection forms through discoverable hooks. The followin
 Add code to the hook class to initiate a discoverable hook and create a custom connection form. The following code defines a hook and a custom connection form:
 
 ```python
-class SampleHook(BaseHook):
+class GreenplumHook(BaseHook):
     """
     Hook docstring ...
     """
 
-    conn_name_attr = "sample_conn_id"
-    default_conn_name = "sample_default"
-    conn_type = "sample"
-    hook_name = "Sample"
+    conn_name_attr = "greenplum_conn_id"
+    default_conn_name = "greenplum_default"
+    conn_type = "greenplum"
+    hook_name = "Greenplum"
 
     @staticmethod
     def get_connection_form_widgets() -> dict[str, Any]:

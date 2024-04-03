@@ -9,9 +9,6 @@ class GreenplumHook(PostgresHook):
     hook_name = "Greenplum"
     supports_autocommit = True
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
 
 # from __future__ import annotations
 #
