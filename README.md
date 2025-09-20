@@ -245,7 +245,7 @@ Every Python module, including all hooks, operators, sensors, and transfers, sho
 - A longer description explaining how the module works. This can include details such as code blocks or blockquotes. For more information Sphinx markdown directives, read the [Sphinx documentation](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-code-block).
 - A declarative definition of parameters that you can pass to the module, templated per the example below.
 
-For a full example of inline module documentation, see the [example operator in this repository](https://github.com/astronomer/airflow-provider-sample/blob/main/sample_provider/operators/sample_operator.py#L11).
+For a full example of inline module documentation, see the [example operator in this repository](https://github.com/astronomer/airflow-provider-sample/blob/main/sample_provider/operators/sample.py#L22).
 
 ### README
 
@@ -267,7 +267,7 @@ To build your repo into a python wheel that can be tested, follow the steps belo
 4. Run `python3 -m build` to build the wheel.
 5. Find the .whl file in `/dist/*.whl`.
 6. Download the [Astro CLI](https://github.com/astronomer/astro-cli).
-7. Create a new project directory, cd into it, and run `astro dev init` to initialize a new astro project.
+7. Create a new project directory, `cd` into it, and run `astro dev init` to initialize a new astro project.
 8. Ensure the Dockerfile contains an [Astro Runtime image that supports _at least_ Airflow 2.3.0](https://docs.astronomer.io/astro/runtime-release-notes). For example:
 
    ```
@@ -281,7 +281,7 @@ To build your repo into a python wheel that can be tested, follow the steps belo
    RUN pip install --user airflow_provider_<PROVIDER_NAME>-0.0.1-py3-none-any.whl
    ```
 
-11. Copy your sample DAG to the `dags/` folder of your astro project directory.
+11. Copy your sample DAG to the `dags/` folder of your Astro project directory.
 12. Run `astro dev start` to build the containers and run Airflow locally (you'll need Docker on your machine).
 13. When you're done, run `astro dev stop` to wind down the deployment. Run `astro dev kill` to kill the containers and remove the local Docker volume. You can also use `astro dev kill` to stop the environment before rebuilding with a new `.whl` file.
 
@@ -289,10 +289,10 @@ To build your repo into a python wheel that can be tested, follow the steps belo
 
 ## Publishing your Provider repository for the Astronomer Registry
 
-If you have never submitted your Provider repository for publication to the Astronomer Registry, [create a new release/tag for your repository](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository) on the `main` branch. Ultimately, the backend of the Astronomer Registry will check for new tags for a Provider repository to trigger adding the new version of the Provider on the Registry.
+If you have never submitted your Provider repository for publication to the Astronomer Registry, [create a new release/tag for your repository](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository) on the `main` branch. Make sure you have the `.astro-registry.yaml` file populated accordingly too. Ultimately, the backend of the Astronomer Registry will check for new tags for a Provider repository to trigger adding the new version of the Provider on the Registry.
 
 > **NOTE:** Tags for the repository must follow typical [semantic versioning](https://semver.org/).
 
-Now that you've created a release/tag, head over to the [Astronomer Registry](https://registry.astronomer.io) and [fill out the form](https://registry.astronomer.io/publish) with your shiny new Provider repo details!
+Now that you've created a release tag, head over to the [Astronomer Registry](https://registry.astronomer.io) and [fill out the form](https://registry.astronomer.io/publish) with your shiny new Provider repo details!
 
-If your Provider is currently on the Astronomer Registry, simply create a new release/tag will trigger an update to the Registry and the new version will be published.
+If your Provider is currently on the Astronomer Registry, simply creating a new release tag will trigger an update to the Registry and the new version will be published.
