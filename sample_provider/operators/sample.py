@@ -13,10 +13,10 @@ if TYPE_CHECKING:
 
 class SampleOperatorExtraLink(BaseOperatorLink):
 
-    name = "Astronomer Registry"
+    name = "Apache Airflow Registry"
 
     def get_link(self, operator: BaseOperator, *, ti_key=None):
-        return "https://registry.astronomer.io"
+        return "https://airflow.apache.org/registry"
 
 
 class SampleOperator(BaseOperator):
