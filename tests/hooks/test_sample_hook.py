@@ -10,9 +10,6 @@ Run test:
 """
 
 import logging
-import os
-import pytest
-import requests_mock
 from unittest import mock
 
 # Import Hook
@@ -29,11 +26,10 @@ class TestSampleHook():
     Test Sample Hook.
     """
 
-    @requests_mock.mock()
-    def test_post(self, m):
+    def test_post(self, requests_mock):
 
         # Mock endpoint
-        m.post('https://www.httpbin.org/', json={'data': 'mocked response'})
+        requests_mock.post('https://www.httpbin.org/', json={'data': 'mocked response'})
 
         # Instantiate hook
         hook = SampleHook(
@@ -53,11 +49,10 @@ class TestSampleHook():
         # Assert the API call returns expected mocked payload
         assert payload['data'] == 'mocked response'
 
-    @requests_mock.mock()
-    def test_get(self, m):
+    def test_get(self, requests_mock):
 
         # Mock endpoint
-        m.get('https://www.httpbin.org/', json={'data': 'mocked response'})
+        requests_mock.get('https://www.httpbin.org/', json={'data': 'mocked response'})
 
         # Instantiate hook
         hook = SampleHook(

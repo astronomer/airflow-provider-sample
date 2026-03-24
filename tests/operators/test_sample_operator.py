@@ -11,9 +11,6 @@ Run test:
 
 import json
 import logging
-import os
-import pytest
-import requests_mock
 from unittest import mock
 
 # Import Operator
@@ -30,11 +27,10 @@ class TestSampleOperator:
     Test Sample Operator.
     """
 
-    @requests_mock.mock()
-    def test_operator(self, m):
+    def test_operator(self, requests_mock):
 
         # Mock endpoint
-        m.get('https://www.httpbin.org/', json={'data': 'mocked response'})
+        requests_mock.get('https://www.httpbin.org/', json={'data': 'mocked response'})
 
         operator = SampleOperator(
             task_id='run_operator',

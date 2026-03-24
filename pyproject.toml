@@ -27,6 +27,12 @@ dependencies = [
     "apache-airflow>=2.4"
 ]
 
+[project.optional-dependencies]
+devel-tests = [
+    "pytest",
+    "requests-mock",
+]
+
 [project.urls]
 Homepage = "https://astronomer.io"
 Source = "https://github.com/astronomer/airflow-provider-sample/"
