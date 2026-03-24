@@ -106,7 +106,6 @@ All modules must follow a specific set of best practices to optimize their perfo
 Modules should also take advantage of native Airflow features that allow your provider to:
 
 - Register custom connection types, which improve the user experience when connecting to your tool.
-- Include `extra-links` that link your provider back to its page on the Astronomer Registry. This provides users easy access to documentation and example DAGs.
 
 Refer to the `Airflow Integration Standards` section for more information on how to build in these extra features.
 
@@ -219,10 +218,10 @@ from airflow.models import BaseOperator, BaseOperatorLink
 
 class SampleOperatorExtraLink(BaseOperatorLink):
 
-    name = "Astronomer Registry"
+    name = "Apache Airflow Registry"
 
     def get_link(self, operator: BaseOperator, *, ti_key=None):
-        return "https://registry.astronomer.io"
+        return "https://airflow.apache.org/registry"
 
 class SampleOperator(BaseOperator):
     """
@@ -286,13 +285,3 @@ To build your repo into a python wheel that can be tested, follow the steps belo
 13. When you're done, run `astro dev stop` to wind down the deployment. Run `astro dev kill` to kill the containers and remove the local Docker volume. You can also use `astro dev kill` to stop the environment before rebuilding with a new `.whl` file.
 
 > Note: If you are having trouble accessing the Airflow webserver locally, there could be a bug in your wheel setup. To debug, run `docker ps`, grab the container ID of the scheduler, and run `docker logs <scheduler-container-id>` to inspect the logs.
-
-## Publishing your Provider repository for the Astronomer Registry
-
-If you have never submitted your Provider repository for publication to the Astronomer Registry, [create a new release/tag for your repository](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository) on the `main` branch. Make sure you have the `.astro-registry.yaml` file populated accordingly too. Ultimately, the backend of the Astronomer Registry will check for new tags for a Provider repository to trigger adding the new version of the Provider on the Registry.
-
-> **NOTE:** Tags for the repository must follow typical [semantic versioning](https://semver.org/).
-
-Now that you've created a release tag, head over to the [Astronomer Registry](https://registry.astronomer.io) and [fill out the form](https://registry.astronomer.io/publish) with your shiny new Provider repo details!
-
-If your Provider is currently on the Astronomer Registry, simply creating a new release tag will trigger an update to the Registry and the new version will be published.
